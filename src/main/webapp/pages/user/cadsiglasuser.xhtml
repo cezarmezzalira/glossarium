@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>
+        <h:outputText value="Glossarium - Sistema de Consulta e Lista De Siglas, Abreviaturas E Acrônimos"/>
+    </title>
+    <h:outputStylesheet library="css" name="index.css"/>
+</h:head>
+
+<h:body>
+
+    <p:layout fullPage="true">
+        <p:layoutUnit id="topo" position="north" styleClass="panelNoBorder" size="130">
+            <p:panel id="login" styleClass="panelNoBorder">
+                <h:form id="formLogin">
+                    <p:commandLink id="loginButton" value="Login" update="growl"
+                                   ajax="false" action="pages/login.xhtml?faces-redirect=true"/>
+                </h:form>
+            </p:panel>
+            <p:panel id="titulo" styleClass="titulo">
+                <h:graphicImage value="resources/images/topo.png"/>
+            </p:panel>
+
+        </p:layoutUnit>
+
+        <p:layoutUnit id="centro" position="center" styleClass="panelNoBorder">
+
+        </p:layoutUnit>
+
+        <p:layoutUnit id="rodape" position="south" styleClass="rodape" size="50">
+            Todos os direitos reservados - Cezar Augusto Mezzalira
+        </p:layoutUnit>
+    </p:layout>
+</h:body>
+</html>

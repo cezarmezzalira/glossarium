@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:components="http://java.sun.com/jsf/composite/components">
+<ui:decorate template="../template/padrao.xhtml">
+    <ui:define name="titulo">
+        <h:outputText value="Siglas para Aprovação"/>
+    </ui:define>
+
+    <ui:define name="metadata">
+        <f:event type="preRenderView" listener="#{siglaController.findNaoAprovados()}"/>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <p:spacer height="40px"/>
+
+        <p:dataTable value="#{siglaController.lsEntity}" var="item"
+                     emptyMessage="#{msg.nenhum_registro_encontrado}"
+                     paginator="true" rows="10" paginatorPosition="bottom">
+            <p:column headerText="#{form.siglaid}" sortBy="#{item.siglaid}" filterBy="#{item.siglaid}">
+                <h:outputText value="#{item.siglaid}"/>
+            </p:column>
+            <p:column headerText="#{form.sigla}" sortBy="#{item.sigla}"
+                      filterBy="#{item.sigla}" filterMatchMode="contains">
+                <h:outputText value="#{item.sigla}"/>
+            </p:column>
+            <p:column headerText="#{form.acoes}" style="text-align: center" width="20%">
+                <components:commandButtonSearch controller="#{siglaController}"/>
+            </p:column>
+        </p:dataTable>
+
+        <p:spacer height="10px"/>
+    </ui:define>
+
+    <ui:define name="rodape">
+        <div style="clear: both"></div>
+    </ui:define>
+
+    <ui:define name="foraDoForm">
+        <components:confirmExclusaoSimples update=":form" action="#{siglaController.delete}"/>
+
+        <p:dialog header="#{form.sigla}" widgetVar="view" modal="true" visible="false" resizable="false" width="300">
+            <p:panelGrid columns="2" id="view" columnClasses="columnBold">
+                <h:outputText value="#{form.siglaid}"/>
+                <h:outputText value="#{siglaController.entityView.siglaid}"/>
+
+                <h:outputText value="#{form.sigla}"/>
+                <h:outputText value="#{siglaController.entityView.sigla}"/>
+            </p:panelGrid>
+        </p:dialog>
+    </ui:define>
+
+</ui:decorate>
+</html>

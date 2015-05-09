@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Siglas" pageWidth="595" pageHeight="842" columnWidth="545" leftMargin="30" rightMargin="20" topMargin="30" bottomMargin="27" uuid="2302d9eb-26da-4d57-8cbe-fc4629485674">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="estrangeira" class="java.lang.String">
+		<fieldDescription><![CDATA[estrangeira]]></fieldDescription>
+	</field>
+	<field name="sigla" class="java.lang.String">
+		<fieldDescription><![CDATA[sigla]]></fieldDescription>
+	</field>
+	<field name="significado" class="java.lang.String">
+		<fieldDescription><![CDATA[significado]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="2" width="58" height="16" uuid="f2abca74-95f4-45e2-9658-564ffedcc223">
+					<printWhenExpression><![CDATA[$F{estrangeira}.equals("0")]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sigla}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement isPrintRepeatedValues="false" x="0" y="2" width="58" height="16" uuid="993ef60e-336d-45c2-8323-457105d06303">
+					<printWhenExpression><![CDATA[$F{estrangeira}.equals("1")]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="SansSerif" size="12" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sigla}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="2" width="439" height="16" uuid="8a68ec5c-ebec-4ba6-90a6-10ea2efe414c">
+					<printWhenExpression><![CDATA[$F{estrangeira}.equals("0")]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{significado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="2" width="439" height="16" uuid="233fc962-37b4-4793-a596-3788d9e8dc88">
+					<printWhenExpression><![CDATA[$F{estrangeira}.equals("1")]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="SansSerif" size="12" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{significado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
