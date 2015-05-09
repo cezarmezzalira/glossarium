@@ -29,6 +29,7 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -169,7 +170,7 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
             terms = readWordUtil.findTerms(paragrafos);
             StringBuilder builder = new StringBuilder("Termos: ");
 
-            //terms.sort(Comparator.<String>naturalOrder());
+            terms.sort(Comparator.<String>naturalOrder());
 
             for (String term : terms) {
                 builder.append(term).append(" - ");
