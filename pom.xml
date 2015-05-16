@@ -419,6 +419,12 @@
             <artifactId>jackson-jaxrs</artifactId>
             <version>1.6.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>4.3.0-2</version>
+        </dependency>
     </dependencies>
     <!--
         <build>

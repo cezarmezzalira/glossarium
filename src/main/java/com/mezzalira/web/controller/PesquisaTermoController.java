@@ -79,6 +79,11 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
         this.destination = "/home/cezar/dev/temp/";
     }
 
+    public void limparCampos(){
+        entity = null;
+        postCreate();
+    }
+
     @Override
     protected ICrudService<Sigla, Integer> getService() {
         return siglaService;  //To change body of implemented methods use File | Settings | File Templates.
@@ -87,6 +92,15 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
     @Override
     protected String getUrlFormPage() {
         return "index.xhtml";
+    }
+
+    public void redirectLogin(){
+        try {
+            getFacesContext().getExternalContext().redirect("pages/login.xhtml?faces-redirect=true");
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void gerarRelatorio() {
