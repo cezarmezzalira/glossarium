@@ -60,28 +60,21 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
     @Autowired
     private TipoSiglaService tipoSiglaService;
 
-
-    private ReadWordUtil readWordUtil;
-
     private SiglaDataModel siglaDataModel;
+
+    private List<Sigla> itensAdicionados = new ArrayList<Sigla>();
 
     private Sigla[] siglas;
 
-    private Part arquivoDoc;
 
-    private String destination = "";
+    public void limparCampos() {
+        entity = new Sigla();
+        siglaDataModel = new SiglaDataModel(new ArrayList<>());
 
-
-    private List<Sigla> itensAdicionados = new ArrayList<Sigla>();
-    private List<String> terms = new ArrayList<>();
-
-    public PesquisaTermoController() {
-        this.destination = "/home/cezar/dev/temp/";
     }
 
-    public void limparCampos(){
-        entity = null;
-        postCreate();
+    private void addToModel() {
+        siglaDataModel = new SiglaDataModel(lsEntity);
     }
 
     @Override
@@ -94,7 +87,7 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
         return "index.xhtml";
     }
 
-    public void redirectLogin(){
+    public void redirectLogin() {
         try {
             getFacesContext().getExternalContext().redirect("pages/login.xhtml?faces-redirect=true");
             return;
@@ -147,101 +140,17 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
     * */
     public void pesquisar() {
         lsEntity = siglaService.findBySiglaOrLinguaIdOrAreaIdOrSubareaIdOrTipoSiglaId(entity);
-        siglaDataModel = new SiglaDataModel(lsEntity);
+        addToModel();
     }
 
     public void adicionarNaLista() {
-        for (Sigla sigla : siglas) {
+        for (Sigla sigla : lsEntity) {
             if (!itensAdicionados.contains(sigla)) {
                 itensAdicionados.add(sigla);
             }
         }
         //Ordeno a lista depois de inserir os dados para que a visualização do relatório fique correta.
         Collections.sort(itensAdicionados, new SiglaComparator());
-    }
-
-    public String adicionaNovoTermo() {
-        return "cadsiglasuser";
-    }
-
-
-    public void readArquivo(InputStream inputStream, String fileExtension) {
-
-        //"C:\\multi\\TCC_CezarAugustoMezzalira.docx"
-        readWordUtil = new ReadWordUtil();
-
-        List<String> paragrafos = new ArrayList<>();
-
-        //Verifica a extensão do arquivo e executa o método correto.
-        if (readWordUtil.EXTENSION_FILE_DOCX.equalsIgnoreCase(fileExtension)) {
-            paragrafos = readWordUtil.readDocxFile(inputStream);
-        } else if (readWordUtil.EXTENSION_FILE_DOC.equalsIgnoreCase(fileExtension)) {
-            paragrafos = readWordUtil.readDocFile(inputStream);
-        }
-
-
-        if (paragrafos.size() > 0) {
-            terms = readWordUtil.findTerms(paragrafos);
-            StringBuilder builder = new StringBuilder("Termos: ");
-
-            terms.sort(Comparator.<String>naturalOrder());
-
-            for (String term : terms) {
-                builder.append(term).append(" - ");
-            }
-
-            System.out.println(builder.toString());
-        }else{
-            addMessage(new FacesMessage("Nenhum termo foi encontrado no documento carregado."));
-        }
-
-    }
-
-
-    public void upload(FileUploadEvent event) {
-        FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-
-        // Do what you want with the file
-        try {
-            //copia para pasta do sistema
-            copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
-
-            //faz analise do arquivo que foi recebido
-            String fileName = event.getFile().getFileName();
-
-            String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-            String filePath = destination + fileName;
-            readArquivo(event.getFile().getInputstream(), fileExtension);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        addMessage(new FacesMessage("Uploaded!"));
-    }
-
-
-    public void copyFile(String fileName, InputStream in) {
-        try {
-            // write the inputStream to a FileOutputStream
-            OutputStream out = new FileOutputStream(new File(destination + fileName));
-
-            int read = 0;
-            byte[] bytes = new byte[1024];
-
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-
-            in.close();
-            out.flush();
-            out.close();
-
-            addMessage(new FacesMessage("Upload feito com sucesso!"));
-            //System.out.println("New file created!");
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     //completes para objetos
@@ -269,39 +178,19 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
         this.siglaDataModel = siglaDataModel;
     }
 
+    public List<Sigla> getItensAdicionados() {
+        return itensAdicionados;
+    }
+
+    public void setItensAdicionados(List<Sigla> itensAdicionados) {
+        this.itensAdicionados = itensAdicionados;
+    }
+
     public Sigla[] getSiglas() {
         return siglas;
     }
 
     public void setSiglas(Sigla[] siglas) {
         this.siglas = siglas;
-    }
-
-    public List<Sigla> getItensAdicionados() {
-        return itensAdicionados;
-    }
-
-    public ReadWordUtil getReadWordUtil() {
-        return readWordUtil;
-    }
-
-    public void setReadWordUtil(ReadWordUtil readWordUtil) {
-        this.readWordUtil = readWordUtil;
-    }
-
-    public List<String> getTerms() {
-        return terms;
-    }
-
-    public void setTerms(List<String> terms) {
-        this.terms = terms;
-    }
-
-    public Part getArquivoDoc() {
-        return arquivoDoc;
-    }
-
-    public void setArquivoDoc(Part arquivoDoc) {
-        this.arquivoDoc = arquivoDoc;
     }
 }

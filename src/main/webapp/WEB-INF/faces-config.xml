@@ -25,13 +25,15 @@
         </locale-config>
 
         <system-event-listener>
-            <system-event-listener-class>com.mezzalira.web.scope.ViewScopeCallbackRegistrar</system-event-listener-class>
+            <system-event-listener-class>com.mezzalira.web.scope.ViewScopeCallbackRegistrar
+            </system-event-listener-class>
             <system-event-class>javax.faces.event.PostConstructViewMapEvent</system-event-class>
             <source-class>javax.faces.component.UIViewRoot</source-class>
         </system-event-listener>
 
         <system-event-listener>
-            <system-event-listener-class>com.mezzalira.web.scope.ViewScopeCallbackRegistrar</system-event-listener-class>
+            <system-event-listener-class>com.mezzalira.web.scope.ViewScopeCallbackRegistrar
+            </system-event-listener-class>
             <system-event-class>javax.faces.event.PreDestroyViewMapEvent</system-event-class>
             <source-class>javax.faces.component.UIViewRoot</source-class>
         </system-event-listener>
@@ -41,16 +43,20 @@
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>loginPage</from-outcome>
-                <to-view-id>/pages/login.xhtml</to-view-id>
+            <to-view-id>/pages/login.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
         <navigation-case>
             <from-outcome>paginaInicial</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>lerDocumento</from-outcome>
+            <to-view-id>/pages/app/lerDocumento.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
-
-
 
     <lifecycle>
         <phase-listener>com.mezzalira.web.interceptor.LoginInterceptor</phase-listener>

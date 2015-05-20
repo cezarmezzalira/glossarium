@@ -9,12 +9,13 @@
 .titulo {
     text-align: center;
     border: 0 !important;
+    padding: 0 auto !important;
 
 }
 
-#titulo_content {
-    padding-top: 0;
-    padding-bottom: 0;
+#titulo_content > .ui-panel-content, .ui-widget-content{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 #centro {
@@ -47,7 +48,8 @@
 
 .panelNoBorder {
     border: 0 !important;
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
 }
 
 .cellItalicNoBorder {

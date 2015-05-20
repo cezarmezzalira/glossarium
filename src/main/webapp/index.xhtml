@@ -1,290 +1,166 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:components="http://java.sun.com/jsf/composite/components"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:components="http://java.sun.com/jsf/composite/components">
+<ui:decorate template="/resources/template/default.xhtml">
 
-<h:head>
-    <title>
-        <h:outputText value="Glossarium - Sistema de Consulta e Lista De Siglas, Abreviaturas E Acrônimos"/>
-    </title>
-    <h:outputStylesheet name="webjars/font-awesome/4.3.0/css/font-awesome-jsf.css"/>
-    <h:outputStylesheet name="css/index.css"/>
-</h:head>
+    <ui:define name="conteudo">
+        <h:form id="formPesquisa" style="padding: 0">
+            <p:panel id="panelParametros" toggleSpeed="500" toggleable="true"
+                     header="Parametros para pesquisa" styleClass="panelNoBorder" >
+                <p:panelGrid columns="2" styleClass="centered">
 
-<h:body>
+                    <h:outputText for="termo" value="Digite o termo para pesquisar: "/>
+                    <p:inputText value="#{pesquisaTermoController.entity.sigla}"
+                                 id="termo" required="true" label="termo" size="75"/>
 
-    <p:layout fullPage="true">
-        <p:layoutUnit id="topo" position="north" styleClass="panelNoBorder" size="140">
-            <p:panel id="titulo" styleClass="titulo">
-                <h:graphicImage value="resources/images/topo.png"/>
+                    <p:outputLabel value="#{form.linguagem}" for="linguagem"/>
+                    <p:autoComplete value="#{pesquisaTermoController.entity.linguaid}"
+                                    completeMethod="#{pesquisaTermoController.completeLinguagem()}"
+                                    converter="#{linguagemConverter}"
+                                    label="#{form.linguagem}" id="linguagem" var="linguagem"
+                                    itemLabel="#{linguagem.descricao}" itemValue="#{linguagem}"
+                                    dropdown="true" forceSelection="true" size="75"/>
+
+
+                    <p:outputLabel value="#{form.area}" for="area"/>
+                    <p:autoComplete value="#{pesquisaTermoController.entity.areaid}"
+                                    completeMethod="#{pesquisaTermoController.completeArea()}"
+                                    converter="#{areaConverter}"
+                                    label="#{form.area}" id="area" var="area"
+                                    itemLabel="#{area.descricao}" itemValue="#{area}"
+                                    dropdown="true" forceSelection="true" size="75"/>
+
+
+                    <p:outputLabel value="Subárea" for="subarea"/>
+                    <p:autoComplete value="#{pesquisaTermoController.entity.subareaid}"
+                                    completeMethod="#{pesquisaTermoController.completeSubArea()}"
+                                    converter="#{subAreaConverter}"
+                                    label="#{form.subarea}" id="subarea" var="subarea"
+                                    itemLabel="#{subarea.descricao}" itemValue="#{subarea}"
+                                    dropdown="true" forceSelection="true" size="75"/>
+
+
+                    <p:outputLabel value="Tipo de termo" for="tiposigla"/>
+                    <p:autoComplete value="#{pesquisaTermoController.entity.tiposiglaid}"
+                                    completeMethod="#{pesquisaTermoController.completeTipoSigla()}"
+                                    converter="#{tipoSiglaConverter}"
+                                    label="#{form.tiposigla}" id="tiposigla" var="tiposigla"
+                                    itemLabel="#{tiposigla.descricao}" itemValue="#{tiposigla}"
+                                    dropdown="true" forceSelection="true" size="75"/>
+
+                </p:panelGrid>
+                <p:toolbar>
+                    <p:toolbarGroup align="right">
+                        <p:commandButton id="pesquisaButton" value="Pesquisar"
+                                         action="#{pesquisaTermoController.pesquisar()}"
+                                         icon="fa fa-search"
+                                         process="@form" update="@form"/>
+                        <p:commandButton id="limparCampos" value="Limpar Campos de pesquisa"
+                                         action="#{pesquisaTermoController.limparCampos()}"
+                                         icon="fa fa-times"
+                                         process="@form" update="@form"/>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+            </p:panel>
+            <p:panel styleClass="panelNoBorder">
+                <p:dataTable id="listaResultados"
+                             value="#{pesquisaTermoController.siglaDataModel}" var="item"
+                             emptyMessage="#{msg.nenhum_registro_encontrado}"
+                             selection="#{pesquisaTermoController.siglas}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+
+                    <f:facet name="header">
+                        Resultados da pesquisa
+                    </f:facet>
+
+                    <p:column selectionMode="multiple" style="width:10%"/>
+
+
+                    <p:column style="text-align: center" width="20%" sortBy="#{item.sigla}">
+                        <f:facet name="header">Sigla</f:facet>
+                        <h:outputText style="font-style: italic"
+                                      rendered="#{item.linguaid.estrangeira == 1}"
+                                      value="#{item.sigla}"/>
+                        <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
+                                      value="#{item.sigla}"/>
+                    </p:column>
+
+                    <p:column width="70%">
+                        <f:facet name="header">Significado</f:facet>
+                        <h:outputText style="font-style: italic"
+                                      rendered="#{item.linguaid.estrangeira == 1}"
+                                      value="#{item.significado}"/>
+                        <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
+                                      value="#{item.significado}"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="incluirNaListaButton" value="Incluir na Lista"
+                                         icon="fa fa-list-alt"
+                                         process="@form" update="@form"
+                                         action="#{pesquisaTermoController.adicionarNaLista()}"/>
+                    </f:facet>
+
+                </p:dataTable>
+                <p:dataTable id="listaTermos" value="#{pesquisaTermoController.itensAdicionados}" var="item"
+                             emptyMessage="#{msg.nenhum_registro_encontrado}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+
+                    <f:facet name="header">Lista final</f:facet>
+
+                    <p:column style="text-align: center" width="30%" sortBy="#{item.sigla}">
+                        <f:facet name="header">Sigla</f:facet>
+                        <h:outputText styleClass="cellItalicNoBorder"
+                                      rendered="#{item.linguaid.estrangeira == 1}"
+                                      value="#{item.sigla}"/>
+                        <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
+                                      value="#{item.sigla}"/>
+                    </p:column>
+
+                    <p:column width="70%">
+                        <f:facet name="header">Significado</f:facet>
+                        <h:outputText styleClass="cellItalicNoBorder"
+                                      rendered="#{item.linguaid.estrangeira == 1}"
+                                      value="#{item.significado}"/>
+                        <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
+                                      value="#{item.significado}"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <p:panel header="Gerar Lista">
+                            <h:commandLink action="#{pesquisaTermoController.gerarRelatorio}"
+                                           ajax="false" target="_blank">
+                                <p:graphicImage value="resources/images/pdf.png"/>
+                            </h:commandLink>
+                        </p:panel>
+                    </f:facet>
+                </p:dataTable>
             </p:panel>
 
-            <p:toolbar>
-                <p:toolbarGroup>
-                    <h:form>
-                        <p:commandButton id="btnNovotermo" value="Incluir Novo Termo"
-                                         icon="fa fa-plus-square-o !important" update=":panelCad" process="@this"
-                                         oncomplete="PF('cadTermo').show()"
-                                         action="#{siglaController.reset}"/>
-                        <p:commandButton id="btnDocumento" value="Ler Documento"
-                                         icon="fa fa-file-word-o"
-                                         action="#{pesquisaTermoController.readArquivo}"
-                                         oncomplete="PF('listTerms').show()"
-                                         update="@form"/>
-                    </h:form>
-                </p:toolbarGroup>
-                <p:toolbarGroup align="right">
-                    <h:form>
-                        <p:commandButton id="btnLogin" value="Login"
-                                         icon="fa fa-sign-in"
-                                         action="#{pesquisaTermoController.redirectLogin()}"/>
-                    </h:form>
-                </p:toolbarGroup>
 
-            </p:toolbar>
+            <p:panel styleClass="rodape">
+                <a href="http://pb.utfpr.edu.br" target="_blank">
+                    <h:graphicImage value="resources/images/logo_utfpr.jpg" style="text-align: center"/>
+                </a>
+                <br/>
 
-        </p:layoutUnit>
-
-        <p:layoutUnit id="centro" position="center" styleClass="panelNoBorder">
-            <h:form id="formPesquisa" style="padding: 0">
-                <p:panel id="panelParametros" toggleSpeed="500" toggleable="true"
-                         header="Parametros para pesquisa" styleClass="panelNoBorder">
-                    <p:toolbar>
-                        <p:toolbarGroup>
-                            <p:commandButton id="pesquisaButton" value="Pesquisar"
-                                             action="#{pesquisaTermoController.pesquisar()}"
-                                             icon="fa fa-search"
-                                             process="@form" update="@form"/>
-                            <span class="ui-separator">
-                                <span class="ui-icon ui-icon-grip-dotted-vertical"/>
-                            </span>
-                            <p:commandButton id="limparCampos" value="Limpar Campos de pesquisa"
-                                             action="#{pesquisaTermoController.limparCampos()}"
-                                             icon="fa fa-times"
-                                             process="@form" update="@form"/>
-                        </p:toolbarGroup>
-                    </p:toolbar>
-
-                    <p:panelGrid columns="2">
-
-                        <h:outputText for="termo" value="Digite o termo para pesquisar: "/>
-                        <p:inputText value="#{pesquisaTermoController.entity.sigla}"
-                                     id="termo" required="true" label="termo" size="75"/>
-
-                        <p:outputLabel value="#{form.linguagem}" for="linguagem"/>
-                        <p:autoComplete value="#{pesquisaTermoController.entity.linguaid}"
-                                        completeMethod="#{pesquisaTermoController.completeLinguagem()}"
-                                        converter="#{linguagemConverter}"
-                                        label="#{form.linguagem}" id="linguagem" var="linguagem"
-                                        itemLabel="#{linguagem.descricao}" itemValue="#{linguagem}"
-                                        dropdown="true" forceSelection="true" size="75"/>
+                Desenvolvido por: <a href="http://fb.com/cezar.mezzalira"
+                                     target="_blank">Cezar Augusto Mezzalira</a> aluno do curso de Tecnologia em Análise e Desenvolvimento de Sistemas, UTFPR, Câmpus Pato Branco. Ano: 2014
+            </p:panel>
 
 
-                        <p:outputLabel value="#{form.area}" for="area"/>
-                        <p:autoComplete value="#{pesquisaTermoController.entity.areaid}"
-                                        completeMethod="#{pesquisaTermoController.completeArea()}"
-                                        converter="#{areaConverter}"
-                                        label="#{form.area}" id="area" var="area"
-                                        itemLabel="#{area.descricao}" itemValue="#{area}"
-                                        dropdown="true" forceSelection="true" size="75"/>
+        </h:form>
+    </ui:define>
 
+    <ui:define name="rodape">
+    </ui:define>
 
-                        <p:outputLabel value="Subárea" for="subarea"/>
-                        <p:autoComplete value="#{pesquisaTermoController.entity.subareaid}"
-                                        completeMethod="#{pesquisaTermoController.completeSubArea()}"
-                                        converter="#{subAreaConverter}"
-                                        label="#{form.subarea}" id="subarea" var="subarea"
-                                        itemLabel="#{subarea.descricao}" itemValue="#{subarea}"
-                                        dropdown="true" forceSelection="true" size="75"/>
+    <ui:define name="foraDoForm">
+    </ui:define>
 
-
-                        <p:outputLabel value="Tipo de termo" for="tiposigla"/>
-                        <p:autoComplete value="#{pesquisaTermoController.entity.tiposiglaid}"
-                                        completeMethod="#{pesquisaTermoController.completeTipoSigla()}"
-                                        converter="#{tipoSiglaConverter}"
-                                        label="#{form.tiposigla}" id="tiposigla" var="tiposigla"
-                                        itemLabel="#{tiposigla.descricao}" itemValue="#{tiposigla}"
-                                        dropdown="true" forceSelection="true" size="75"/>
-
-                    </p:panelGrid>
-                </p:panel>
-                <p:panel styleClass="panelNoBorder">
-                    <p:dataTable id="listaResultados"
-                                 value="#{pesquisaTermoController.siglaDataModel}" var="item"
-                                 emptyMessage="#{msg.nenhum_registro_encontrado}"
-                                 selection="#{pesquisaTermoController.siglas}"
-                                 paginator="true" rows="10" paginatorPosition="bottom">
-
-                        <f:facet name="header">
-                            Resultados da pesquisa
-                        </f:facet>
-
-                        <p:column selectionMode="multiple" style="width:10%"/>
-
-
-                        <p:column style="text-align: center" width="20%" sortBy="#{item.sigla}">
-                            <f:facet name="header">Sigla</f:facet>
-                            <h:outputText style="font-style: italic"
-                                          rendered="#{item.linguaid.estrangeira == 1}"
-                                          value="#{item.sigla}"/>
-                            <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
-                                          value="#{item.sigla}"/>
-                        </p:column>
-
-                        <p:column width="70%">
-                            <f:facet name="header">Significado</f:facet>
-                            <h:outputText style="font-style: italic"
-                                          rendered="#{item.linguaid.estrangeira == 1}"
-                                          value="#{item.significado}"/>
-                            <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
-                                          value="#{item.significado}"/>
-                        </p:column>
-
-                        <f:facet name="footer">
-                            <p:commandButton id="incluirNaListaButton" value="Incluir na Lista"
-                                             icon="fa fa-list-alt"
-                                             process="@form" update="@form"
-                                             action="#{pesquisaTermoController.adicionarNaLista()}"/>
-                        </f:facet>
-
-                    </p:dataTable>
-                    <p:dataTable id="listaTermos" value="#{pesquisaTermoController.itensAdicionados}" var="item"
-                                 emptyMessage="#{msg.nenhum_registro_encontrado}"
-                                 paginator="true" rows="10" paginatorPosition="bottom">
-
-                        <f:facet name="header">Lista final</f:facet>
-
-                        <p:column style="text-align: center" width="30%" sortBy="#{item.sigla}">
-                            <f:facet name="header">Sigla</f:facet>
-                            <h:outputText styleClass="cellItalicNoBorder"
-                                          rendered="#{item.linguaid.estrangeira == 1}"
-                                          value="#{item.sigla}"/>
-                            <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
-                                          value="#{item.sigla}"/>
-                        </p:column>
-
-                        <p:column width="70%">
-                            <f:facet name="header">Significado</f:facet>
-                            <h:outputText styleClass="cellItalicNoBorder"
-                                          rendered="#{item.linguaid.estrangeira == 1}"
-                                          value="#{item.significado}"/>
-                            <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
-                                          value="#{item.significado}"/>
-                        </p:column>
-
-                        <f:facet name="footer">
-                            <p:panel header="Gerar Lista">
-                                <h:commandLink action="#{pesquisaTermoController.gerarRelatorio}"
-                                               ajax="false" target="_blank">
-                                    <p:graphicImage value="resources/images/pdf.png"/>
-                                </h:commandLink>
-                            </p:panel>
-                        </f:facet>
-                    </p:dataTable>
-                </p:panel>
-
-
-                <p:panel styleClass="rodape">
-                    <a href="http://pb.utfpr.edu.br" target="_blank">
-                        <h:graphicImage value="resources/images/logo_utfpr.jpg" style="text-align: center"/>
-                    </a>
-                    <br/>
-
-                    Desenvolvido por: <a href="http://fb.com/cezar.mezzalira"
-                                         target="_blank">Cezar Augusto Mezzalira</a> aluno do curso de Tecnologia em Análise e Desenvolvimento de Sistemas, UTFPR, Câmpus Pato Branco. Ano: 2014
-                </p:panel>
-
-
-            </h:form>
-
-            <p:dialog header="Cadastro de Termo" id="cadTermo" widgetVar="cadTermo"
-                      modal="true" visible="false" resizable="false" width="600"
-                      appendTo="@(body)">
-                <h:form id="panelCad">
-
-                    <p:messages id="messagesCad"/>
-
-                    <p:panelGrid columns="2">
-                        <p:outputLabel value="#{form.siglaid}" for="siglaid"/>
-                        <p:inputText value="#{siglaController.entity.siglaid}"
-                                     label="#{form.siglaid}" id="siglaid" disabled="true"/>
-
-                        <p:outputLabel value="Sigla" for="c_sigla"/>
-                        <p:inputText value="#{siglaController.entity.sigla}"
-                                     label="#{form.sigla}" id="c_sigla"/>
-
-                        <p:outputLabel value="#{form.significado}" for="c_significado"/>
-                        <p:inputTextarea value="#{siglaController.entity.significado}"
-                                         label="#{form.significado}" id="c_significado"/>
-
-                        <p:outputLabel value="Lingua" for="c_linguagem"/>
-                        <p:autoComplete value="#{siglaController.entity.linguaid}"
-                                        completeMethod="#{siglaController.completeLinguagem()}"
-                                        converter="#{linguagemConverter}"
-                                        label="#{form.linguagem}" id="c_linguagem" var="linguagem"
-                                        itemLabel="#{linguagem.descricao}" itemValue="#{linguagem}"
-                                        dropdown="true" forceSelection="true" required="true"/>
-
-                        <p:outputLabel value="Área de Conhecimento" for="c_area"/>
-                        <p:autoComplete value="#{siglaController.entity.areaid}"
-                                        completeMethod="#{siglaController.completeArea()}"
-                                        converter="#{areaConverter}"
-                                        label="#{form.area}" id="c_area" var="area"
-                                        itemLabel="#{area.descricao}" itemValue="#{area}"
-                                        dropdown="true" forceSelection="true" required="true"/>
-
-                        <p:outputLabel value="Subárea de Conhecimento" for="c_subarea"/>
-                        <p:autoComplete value="#{siglaController.entity.subareaid}"
-                                        completeMethod="#{siglaController.completeSubArea()}"
-                                        converter="#{subAreaConverter}"
-                                        label="#{form.subarea}" id="c_subarea" var="subarea"
-                                        itemLabel="#{subarea.descricao}" itemValue="#{subarea}"
-                                        dropdown="true" forceSelection="true"/>
-
-
-                        <p:outputLabel value="Tipo de Termo" for="c_tiposigla"/>
-                        <p:autoComplete value="#{siglaController.entity.tiposiglaid}"
-                                        completeMethod="#{siglaController.completeTipoSigla()}"
-                                        converter="#{tipoSiglaConverter}"
-                                        label="#{form.tiposigla}" id="c_tiposigla" var="tiposigla"
-                                        itemLabel="#{tiposigla.descricao}" itemValue="#{tiposigla}"
-                                        dropdown="true" forceSelection="true" required="true"/>
-                    </p:panelGrid>
-                    <components:commandButton update="@form" controller="#{siglaController}"/>
-                </h:form>
-            </p:dialog>
-
-
-            <p:dialog header="Ler Documento Para Pesquisa" widgetVar="listTerms" minHeight="40"
-                      modal="true" visible="false" resizable="false" width="600"
-                      appendTo="@(body)">
-                <h:form id="formListaTerms" enctype="multipart/form-data">
-                    <p:panel>
-                        <p:fileUpload fileUploadListener="#{pesquisaTermoController.upload}"
-                                      allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
-                                      description="Selecione o arquivo"
-                                      mode="advanced" dragDropSupport="true"
-                                      fileLimit="1" fileLimitMessage="Só é possível efetuar upload de um arquivo"
-                                      update="listTermos"/>
-                    </p:panel>
-
-                    <p:dataList id="listTermos" value="#{pesquisaTermoController.terms}" var="term" type="ordered">
-                        <f:facet name="header">
-                            Termos
-                        </f:facet>
-                        #{term}
-                    </p:dataList>
-                </h:form>
-            </p:dialog>
-
-        </p:layoutUnit>
-
-        <p:layoutUnit id="rodape" position="south" styleClass="rodape" size="50" rendered="false">
-        </p:layoutUnit>
-    </p:layout>
-</h:body>
+</ui:decorate>
 </html>

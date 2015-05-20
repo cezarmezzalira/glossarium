@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>
+        <h:outputText value="Glossarium - Sistema de Consulta e Lista De Siglas, Abreviaturas E Acrônimos"/>
+    </title>
+    <h:outputStylesheet name="webjars/font-awesome/4.3.0/css/font-awesome-jsf.css"/>
+    <h:outputStylesheet name="css/index.css"/>
+</h:head>
+
+<h:body>
+    <f:view>
+        <h:form>
+            <p:layout fullPage="true">
+                <p:layoutUnit id="topo" position="north" styleClass="panelNoBorder" size="140">
+                    <p:panel id="titulo" styleClass="titulo">
+                        <h:graphicImage value="#{resource['images/topo.png']}"/>
+                    </p:panel>
+
+                    <p:toolbar>
+                        <p:toolbarGroup>
+                            <h:form>
+                                <p:commandButton value="Home"
+                                                 icon="fa fa-home"
+                                                 action="paginaInicial"
+                                                 ajax="false" immediate="true"/>
+
+                                <p:commandButton value="Incluir Novo Termo"
+                                                 icon="fa fa-plus-square-o !important" update="@form" process="@this"
+                                                 actionListener="#{siglaController.showCadSigla}"/>
+                                <p:commandButton value="Ler Documento"
+                                                 icon="fa fa-file-word-o"
+                                                 action="lerDocumento"
+                                                 ajax="false" immediate="true"/>
+                                <p:commandButton value="Login"
+                                                 icon="fa fa-sign-in"
+                                                 action="loginPage"
+                                                 ajax="false" immediate="true"/>
+                            </h:form>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="centro" position="center" styleClass="panelNoBorder">
+                    <p:messages id="messages" closable="true"/>
+                    <ui:insert name="conteudo">
+                    </ui:insert>
+                    <f:facet name="footer">
+                        <ui:insert name="rodape">
+
+                        </ui:insert>
+                    </f:facet>
+                </p:layoutUnit>
+
+            </p:layout>
+        </h:form>
+        <ui:insert name="foraDoForm">
+
+        </ui:insert>
+        <p:dialog widgetVar="cadSigla" modal="true"
+                  draggable="false" closable="true" resizable="false"
+                  header="Novo Termo" appendTo="@(body)" width="600" height="400">
+            <h:form>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="#{form.siglaid}" for="siglaid"/>
+                    <p:inputText value="#{siglaController.entity.siglaid}"
+                                 label="#{form.siglaid}" id="siglaid" disabled="true"/>
+
+                    <p:outputLabel value="Sigla" for="c_sigla"/>
+                    <p:inputText value="#{siglaController.entity.sigla}"
+                                 label="#{form.sigla}" id="c_sigla"/>
+
+                    <p:outputLabel value="#{form.significado}" for="c_significado"/>
+                    <p:inputTextarea value="#{siglaController.entity.significado}"
+                                     label="#{form.significado}" id="c_significado"/>
+
+                    <p:outputLabel value="Lingua" for="c_linguagem"/>
+                    <p:autoComplete value="#{siglaController.entity.linguaid}"
+                                    completeMethod="#{siglaController.completeLinguagem()}"
+                                    converter="#{linguagemConverter}"
+                                    label="#{form.linguagem}" id="c_linguagem" var="linguagem"
+                                    itemLabel="#{linguagem.descricao}" itemValue="#{linguagem}"
+                                    dropdown="true" forceSelection="true" required="true"/>
+
+                    <p:outputLabel value="Área de Conhecimento" for="c_area"/>
+                    <p:autoComplete value="#{siglaController.entity.areaid}"
+                                    completeMethod="#{siglaController.completeArea()}"
+                                    converter="#{areaConverter}"
+                                    label="#{form.area}" id="c_area" var="area"
+                                    itemLabel="#{area.descricao}" itemValue="#{area}"
+                                    dropdown="true" forceSelection="true" required="true"/>
+
+                    <p:outputLabel value="Subárea de Conhecimento" for="c_subarea"/>
+                    <p:autoComplete value="#{siglaController.entity.subareaid}"
+                                    completeMethod="#{siglaController.completeSubArea()}"
+                                    converter="#{subAreaConverter}"
+                                    label="#{form.subarea}" id="c_subarea" var="subarea"
+                                    itemLabel="#{subarea.descricao}" itemValue="#{subarea}"
+                                    dropdown="true" forceSelection="true"/>
+
+
+                    <p:outputLabel value="Tipo de Termo" for="c_tiposigla"/>
+                    <p:autoComplete value="#{siglaController.entity.tiposiglaid}"
+                                    completeMethod="#{siglaController.completeTipoSigla()}"
+                                    converter="#{tipoSiglaConverter}"
+                                    label="#{form.tiposigla}" id="c_tiposigla" var="tiposigla"
+                                    itemLabel="#{tiposigla.descricao}" itemValue="#{tiposigla}"
+                                    dropdown="true" forceSelection="true" required="true"/>
+                </p:panelGrid>
+                <components:commandButton update="@form" controller="#{siglaController}"/>
+
+            </h:form>
+        </p:dialog>
+    </f:view>
+</h:body>
+</html>
