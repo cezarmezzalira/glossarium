@@ -20,33 +20,8 @@
     <f:view>
         <h:form>
             <p:layout fullPage="true">
-                <p:layoutUnit id="topo" position="north" styleClass="panelNoBorder" size="140">
-                    <p:panel id="titulo" styleClass="titulo">
-                        <h:graphicImage value="#{resource['images/topo.png']}"/>
-                    </p:panel>
-
-                    <p:toolbar>
-                        <p:toolbarGroup>
-                            <h:form>
-                                <p:commandButton value="Home"
-                                                 icon="fa fa-home"
-                                                 action="paginaInicial"
-                                                 ajax="false" immediate="true"/>
-
-                                <p:commandButton value="Incluir Novo Termo"
-                                                 icon="fa fa-plus-square-o !important" update="@form" process="@this"
-                                                 actionListener="#{siglaController.showCadSigla}"/>
-                                <p:commandButton value="Ler Documento"
-                                                 icon="fa fa-file-word-o"
-                                                 action="lerDocumento"
-                                                 ajax="false" immediate="true"/>
-                                <p:commandButton value="Login"
-                                                 icon="fa fa-sign-in"
-                                                 action="loginPage"
-                                                 ajax="false" immediate="true"/>
-                            </h:form>
-                        </p:toolbarGroup>
-                    </p:toolbar>
+                <p:layoutUnit id="topo" position="north" styleClass="panelNoBorder" size="125">
+                    <ui:include src="/resources/template/header.xhtml"/>
                 </p:layoutUnit>
 
 

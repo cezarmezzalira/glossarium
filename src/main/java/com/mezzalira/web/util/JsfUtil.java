@@ -93,7 +93,7 @@ public class JsfUtil {
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect(page);
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
 

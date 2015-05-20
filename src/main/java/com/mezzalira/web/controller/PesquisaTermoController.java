@@ -62,7 +62,7 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
 
     private SiglaDataModel siglaDataModel;
 
-    private List<Sigla> itensAdicionados = new ArrayList<Sigla>();
+    private List<Sigla> itensAdicionados = new ArrayList<>();
 
     private Sigla[] siglas;
 
@@ -87,18 +87,9 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
         return "index.xhtml";
     }
 
-    public void redirectLogin() {
-        try {
-            getFacesContext().getExternalContext().redirect("pages/login.xhtml?faces-redirect=true");
-            return;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void gerarRelatorio() {
         //Crio a lista com os itens da lista final
-        List<SiglaReport> siglasReport = new ArrayList<SiglaReport>();
+        List<SiglaReport> siglasReport = new ArrayList<>();
         for (Sigla itensAdicionado : itensAdicionados) {
             siglasReport.add(new SiglaReport(itensAdicionado));
         }

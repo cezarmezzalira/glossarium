@@ -7,6 +7,23 @@
 <ui:decorate template="/resources/template/default.xhtml">
 
     <ui:define name="conteudo">
+        <h:form id="formListaTerms" enctype="multipart/form-data">
+            <p:panel>
+                <p:fileUpload fileUploadListener="#{siglaController.upload}"
+                              allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
+                              description="Selecione o arquivo"
+                              mode="advanced" dragDropSupport="true"
+                              fileLimit="1" fileLimitMessage="Só é possível efetuar upload de um arquivo"
+                              update="listTermos"/>
+            </p:panel>
+
+            <p:dataList id="listTermos" value="#{siglaController.terms}" var="term" type="ordered">
+                <f:facet name="header">
+                    Termos
+                </f:facet>
+                #{term}
+            </p:dataList>
+        </h:form>
     </ui:define>
 
     <ui:define name="rodape">

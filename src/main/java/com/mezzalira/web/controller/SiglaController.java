@@ -76,7 +76,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
 
     @Override
     public void find() {
-        if (entity.getSigla() != "")
+        if (!entity.getSigla().equals(""))
             lsEntity = siglaService.findBySigla(entity.getSigla());
         else
             lsEntity = siglaService.findAll();
@@ -85,10 +85,6 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     public void showCadSigla() {
 
         RequestContext.getCurrentInstance().execute("PF('cadSigla').show()");
-    }
-
-    public void redirectReadDoc(){
-
     }
 
 
@@ -100,10 +96,10 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         List<String> paragrafos = new ArrayList<>();
 
         //Verifica a extensão do arquivo e executa o método correto.
-        if (readWordUtil.EXTENSION_FILE_DOCX.equalsIgnoreCase(fileExtension)) {
-            paragrafos = readWordUtil.readDocxFile(inputStream);
-        } else if (readWordUtil.EXTENSION_FILE_DOC.equalsIgnoreCase(fileExtension)) {
-            paragrafos = readWordUtil.readDocFile(inputStream);
+        if (ReadWordUtil.EXTENSION_FILE_DOCX.equalsIgnoreCase(fileExtension)) {
+            paragrafos = ReadWordUtil.readDocxFile(inputStream);
+        } else if (ReadWordUtil.EXTENSION_FILE_DOC.equalsIgnoreCase(fileExtension)) {
+            paragrafos = ReadWordUtil.readDocFile(inputStream);
         }
 
 
@@ -146,7 +142,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
             // write the inputStream to a FileOutputStream
             OutputStream out = new FileOutputStream(new File(destination + fileName));
 
-            int read = 0;
+            int read;
             byte[] bytes = new byte[1024];
 
             while ((read = in.read(bytes)) != -1) {
