@@ -8,30 +8,16 @@ import com.mezzalira.web.comparator.SiglaComparator;
 import com.mezzalira.web.framework.CrudController;
 import com.mezzalira.web.model.SiglaDataModel;
 import com.mezzalira.web.report.SiglaReport;
-import com.mezzalira.web.util.ReadWordUtil;
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
-import net.sf.jasperreports.engine.JasperRunManager;
+import com.mezzalira.web.report.UtilReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Created with IntelliJ IDEA.
@@ -65,7 +51,7 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
     private List<Sigla> itensAdicionados = new ArrayList<>();
 
     private Sigla[] siglas;
-
+    private UtilReport utilReport;
 
     public void limparCampos() {
         entity = new Sigla();
@@ -93,36 +79,7 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
         for (Sigla itensAdicionado : itensAdicionados) {
             siglasReport.add(new SiglaReport(itensAdicionado));
         }
-
-
-        String nomeRelatorio = "Siglas";
-
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        ServletContext servletContext = (ServletContext) externalContext.getContext();
-        String arquivo = servletContext.getRealPath("WEB-INF/relatorios/" + nomeRelatorio + ".jasper");
-        JRDataSource jrds = new JRBeanCollectionDataSource(siglasReport);
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-
-        try {
-            DefaultJasperReportsContext jContext = DefaultJasperReportsContext.getInstance();
-            JRPropertiesUtil.getInstance(jContext).setProperty("net.sf.jasperreports.default.font.name", "Arial Sans");
-            JRPropertiesUtil.getInstance(jContext).setProperty("net.sf.jasperreports.default.pdf.embedded", "true");
-            JRPropertiesUtil.getInstance(jContext).setProperty("net.sf.jasperreports.default.pdf.font.name", "Arial Sans");
-
-            ServletOutputStream servletOutputStream = response.getOutputStream();
-            JasperRunManager.runReportToPdfStream(new FileInputStream(new File(arquivo)), servletOutputStream, null, jrds);
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + nomeRelatorio + ".pdf\"");
-
-            servletOutputStream.flush();
-            servletOutputStream.close();
-            context.renderResponse();
-            context.responseComplete();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getUtilReport().getReportByName("Siglas", new JRBeanCollectionDataSource(siglasReport), new HashMap<>());
     }
 
     /*
@@ -135,7 +92,8 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
     }
 
     public void adicionarNaLista() {
-        for (Sigla sigla : lsEntity) {
+        for (Sigla sigla : siglas) {
+
             if (!itensAdicionados.contains(sigla)) {
                 itensAdicionados.add(sigla);
             }
@@ -183,5 +141,16 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
 
     public void setSiglas(Sigla[] siglas) {
         this.siglas = siglas;
+    }
+
+    public UtilReport getUtilReport() {
+        if (utilReport == null) {
+            utilReport = new UtilReport();
+        }
+        return utilReport;
+    }
+
+    public boolean getListaTemTermos() {
+        return !(getItensAdicionados().size() > 0);
     }
 }

@@ -6,19 +6,9 @@
 
 package com.mezzalira.model.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * @author Cezar Mezzalira
@@ -29,7 +19,6 @@ public class Linguagem implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "LINGUAID", nullable = false)
     private Integer linguaid;
     @Basic(optional = false)
@@ -95,15 +84,11 @@ public class Linguagem implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Linguagem)) {
             return false;
         }
         Linguagem other = (Linguagem) object;
-        if ((this.linguaid == null && other.linguaid != null) || (this.linguaid != null && !this.linguaid.equals(other.linguaid))) {
-            return false;
-        }
-        return true;
+        return !((this.linguaid == null && other.linguaid != null) || (this.linguaid != null && !this.linguaid.equals(other.linguaid)));
     }
 
     @Override

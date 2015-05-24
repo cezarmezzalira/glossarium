@@ -2,20 +2,18 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:components="http://java.sun.com/jsf/composite/components">
+      xmlns:h="http://java.sun.com/jsf/html">
 <ui:decorate template="/resources/template/default.xhtml">
 
     <ui:define name="conteudo">
         <h:form id="formListaTerms" enctype="multipart/form-data">
-            <p:panel>
-                <p:fileUpload fileUploadListener="#{siglaController.upload}"
-                              allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
-                              description="Selecione o arquivo"
-                              mode="advanced" dragDropSupport="true"
-                              fileLimit="1" fileLimitMessage="Só é possível efetuar upload de um arquivo"
-                              update="listTermos"/>
-            </p:panel>
+            <p:fileUpload fileUploadListener="#{siglaController.upload}"
+                          allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
+                          description="Selecione o arquivo"
+                          mode="advanced" dragDropSupport="true"
+                          fileLimit="1" fileLimitMessage="Só é possível efetuar upload de um arquivo"
+                          update="listTermos"/>
+
 
             <p:dataList id="listTermos" value="#{siglaController.terms}" var="term" type="ordered">
                 <f:facet name="header">

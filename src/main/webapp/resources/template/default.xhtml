@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:components="http://java.sun.com/jsf/composite/components"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:components="http://java.sun.com/jsf/composite/components"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
@@ -18,29 +18,24 @@
 
 <h:body>
     <f:view>
-        <h:form>
-            <p:layout fullPage="true">
-                <p:layoutUnit id="topo" position="north" styleClass="panelNoBorder" size="125">
+        <p:layout fullPage="true">
+            <p:layoutUnit id="topo" position="north" styleClass="panelNoBorder" size="125">
+                <ui:insert name="topo">
                     <ui:include src="/resources/template/header.xhtml"/>
-                </p:layoutUnit>
+                </ui:insert>
+            </p:layoutUnit>
 
 
-                <p:layoutUnit id="centro" position="center" styleClass="panelNoBorder">
-                    <p:messages id="messages" closable="true"/>
-                    <ui:insert name="conteudo">
-                    </ui:insert>
-                    <f:facet name="footer">
-                        <ui:insert name="rodape">
+            <p:layoutUnit id="centro" position="center" styleClass="panelNoBorder">
+                <p:messages id="messages" closable="true"/>
+                <ui:insert name="conteudo"/>
+                <ui:insert name="rodape"/>
+            </p:layoutUnit>
 
-                        </ui:insert>
-                    </f:facet>
-                </p:layoutUnit>
+        </p:layout>
 
-            </p:layout>
-        </h:form>
-        <ui:insert name="foraDoForm">
+        <ui:insert name="foraDoForm"/>
 
-        </ui:insert>
         <p:dialog widgetVar="cadSigla" modal="true"
                   draggable="false" closable="true" resizable="false"
                   header="Novo Termo" appendTo="@(body)" width="600" height="400">
@@ -91,8 +86,8 @@
                                     itemLabel="#{tiposigla.descricao}" itemValue="#{tiposigla}"
                                     dropdown="true" forceSelection="true" required="true"/>
                 </p:panelGrid>
-                <components:commandButton update="@form" controller="#{siglaController}"/>
 
+                <components:commandButton update="@form" controller="#{siglaController}"/>
             </h:form>
         </p:dialog>
     </f:view>
