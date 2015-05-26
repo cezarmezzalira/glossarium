@@ -2,10 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
     <title>
@@ -13,7 +13,9 @@
             <h:outputText value="Curso"/>
         </ui:insert>
     </title>
-    <h:outputStylesheet library="css" name="menu.css"/>
+    <h:outputStylesheet name="webjars/font-awesome/4.3.0/css/font-awesome-jsf.css"/>
+    <h:outputStylesheet name="webjars/font-awesome/4.3.0/css/font-awesome.min-jsf.css"/>
+    <h:outputStylesheet name="webjars/font-awesome/4.3.0/css/font-awesome.css"/>
     <h:outputStylesheet library="css" name="customPrime.css"/>
     <h:outputStylesheet library="css" name="default.css"/>
 </h:head>
@@ -28,94 +30,83 @@
         </f:metadata>
 
         <h:form id="form">
-            <p:layout>
-                <p:layoutUnit position="west">
+            <p:layout styleClass="panelNoBorder">
+                <p:layoutUnit position="west" styleClass="panelNoBorder">
                     <p:focus/>
-                    <p:menu style="width: 220px;">
-                        <p:submenu label="Cadastros" icon="ui-icon-document">
+                    <p:menu style="width: 300px;" styleClass="panelNoBorder">
+                        <p:submenu label="Cadastros">
 
-                            <p:submenu label="Manutenção" icon="ui-icon-flag">
-                                <p:menuitem value="Aprovação de termos" icon="ui-icon-check"
+                            <p:submenu label="Manutenção">
+                                <p:menuitem value="Aprovação de termos" icon="fa fa-check-square-o"
                                             url="/pages/admin/professor/siglaAprovacaoSearch.xhtml?faces-redirect=true"/>
                             </p:submenu>
-                            <p:submenu label="#{form.usuarios}" icon="ui-icon-wrench">
-                                <p:menuitem value="#{form.cadastro}" icon="ui-icon-plusthick"
+                            <p:submenu label="#{form.usuarios}">
+                                <p:menuitem value="#{form.cadastro}" icon="fa fa-plus-square-o"
                                             url="/pages/admin/usuarioForm.xhtml?faces-redirect=true"/>
-                                <p:menuitem value="#{form.pesquisa}" icon="ui-icon-search"
+                                <p:menuitem value="#{form.pesquisa}" icon="fa fa-search"
                                             url="/pages/admin/usuarioSearch.xhtml?faces-redirect=true"/>
                             </p:submenu>
 
-                            <p:submenu label="#{form.linguagem}" icon="ui-icon-wrench">
-                                <p:menuitem value="#{form.cadastro}" icon="ui-icon-plusthick"
+                            <p:submenu label="#{form.linguagem}">
+                                <p:menuitem value="#{form.cadastro}" icon="fa fa-plus-square-o"
                                             url="/pages/admin/linguagemForm.xhtml?faces-redirect=true"/>
-                                <p:menuitem value="#{form.pesquisa}" icon="ui-icon-search"
+                                <p:menuitem value="#{form.pesquisa}" icon="fa fa-search"
                                             url="/pages/admin/linguagemSearch.xhtml?faces-redirect=true"/>
                             </p:submenu>
 
-                            <p:submenu label="#{form.area}" icon="ui-icon-wrench">
-                                <p:menuitem value="#{form.cadastro}" icon="ui-icon-plusthick"
+                            <p:submenu label="#{form.area}">
+                                <p:menuitem value="#{form.cadastro}" icon="fa fa-plus-square-o"
                                             url="/pages/admin/area/areaForm.xhtml?faces-redirect=true"/>
-                                <p:menuitem value="#{form.pesquisa}" icon="ui-icon-search"
+                                <p:menuitem value="#{form.pesquisa}" icon="fa fa-search"
                                             url="/pages/admin/area/areaSearch.xhtml?faces-redirect=true"/>
                             </p:submenu>
 
-                            <p:submenu label="#{form.subArea}" icon="ui-icon-wrench">
-                                <p:menuitem value="#{form.cadastro}" icon="ui-icon-plusthick"
+                            <p:submenu label="#{form.subArea}">
+                                <p:menuitem value="#{form.cadastro}" icon="fa fa-plus-square-o"
                                             url="/pages/admin/subAreaForm.xhtml?faces-redirect=true"/>
-                                <p:menuitem value="#{form.pesquisa}" icon="ui-icon-search"
+                                <p:menuitem value="#{form.pesquisa}" icon="fa fa-search"
                                             url="/pages/admin/subAreaSearch.xhtml?faces-redirect=true"/>
                             </p:submenu>
 
-                            <p:submenu label="#{form.tipoSigla}" icon="ui-icon-wrench">
-                                <p:menuitem value="#{form.cadastro}" icon="ui-icon-plusthick"
+                            <p:submenu label="#{form.tipoSigla}">
+                                <p:menuitem value="#{form.cadastro}" icon="fa fa-plus-square-o"
                                             url="/pages/admin/tipoSiglaForm.xhtml?faces-redirect=true"/>
-                                <p:menuitem value="#{form.pesquisa}" icon="ui-icon-search"
+                                <p:menuitem value="#{form.pesquisa}" icon="fa fa-search"
                                             url="/pages/admin/tipoSiglaSearch.xhtml?faces-redirect=true"/>
                             </p:submenu>
 
                         </p:submenu>
 
-                        <p:submenu label="Siglas" icon="ui-icon-document">
-                            <p:submenu label="#{form.siglabase}" icon="ui-icon-wrench">
-                                <p:menuitem value="#{form.cadastro}" icon="ui-icon-plusthick"
+                        <p:submenu label="Siglas">
+                            <p:submenu label="#{form.siglabase}">
+                                <p:menuitem value="#{form.cadastro}" icon="fa fa-plus-square-o"
                                             url="/pages/admin/siglaForm.xhtml?faces-redirect=true"/>
-                                <p:menuitem value="#{form.pesquisa}" icon="ui-icon-search"
+                                <p:menuitem value="#{form.pesquisa}" icon="fa fa-search"
                                             url="/pages/admin/siglaSearch.xhtml?faces-redirect=true"/>
                             </p:submenu>
                         </p:submenu>
 
-                        <p:submenu label="Sair" icon="ui-icon-wrench">
-                            <p:menuitem value="Sair" icon="ui-icon-power" action="#{loginController.logout}"
-                                        ajax="false"/>
+                        <p:submenu label="Sair">
+                            <p:menuitem value="Sair" icon="fa fa-sign-out" action="#{loginController.logout}"
+                                        immediate="true" ajax="false"/>
                         </p:submenu>
                     </p:menu>
                 </p:layoutUnit>
 
-                <p:layoutUnit position="center">
-                    <p:panel>
-                        <f:facet name="header">
-                            <ui:insert name="titulo">
-                                <h:outputText value="Curso"/>
-                            </ui:insert>
-                        </f:facet>
+                <p:layoutUnit position="center" styleClass="panelNoBorder">
+                    <f:facet name="header">
+                        <ui:insert name="titulo"/>
+                    </f:facet>
 
-                        <p:messages id="messages" closable="true"/>
+                    <p:messages id="messages" closable="true"/>
 
-                        <ui:insert name="conteudo">
+                    <ui:insert name="conteudo"/>
 
-                        </ui:insert>
-
-                        <f:facet name="footer">
-                            <ui:insert name="rodape">
-
-                            </ui:insert>
-                        </f:facet>
-                    </p:panel>
+                    <ui:insert name="rodape"/>
                 </p:layoutUnit>
             </p:layout>
         </h:form>
-        <ui:insert name="foraDoForm">
-        </ui:insert>
+        <ui:insert name="foraDoForm"/>
     </f:view>
 </h:body>
 </html>
