@@ -204,6 +204,10 @@ public abstract class CrudController<T extends Object, ID extends Serializable> 
         lsEntity.addAll(getService().findAll());
     }
 
+    protected String formList(){
+        return "";
+    }
+
     public T getEntity() {
         return entity;
     }

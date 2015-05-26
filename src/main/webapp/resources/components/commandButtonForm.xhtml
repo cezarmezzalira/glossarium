@@ -4,34 +4,53 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
         >
+<h:head>
+    <h:outputStylesheet name="webjars/font-awesome/4.3.0/css/font-awesome-jsf.css"/>
+</h:head>
 
 <composite:interface>
 
-    <composite:attribute name="controller"  required="true" />
-    <composite:attribute name="update" required="true" />
-    <composite:attribute name="process" required="false" />
-    <composite:attribute name="saveComplete" required="false" />
-    <composite:attribute name="disabledSave" required="false" default="false" />
+    <composite:attribute name="controller" required="true"/>
+    <composite:attribute name="update" required="true"/>
+    <composite:attribute name="process" required="false"/>
+    <composite:attribute name="saveComplete" required="false"/>
+    <composite:attribute name="disabledSave" required="false" default="false"/>
     <composite:attribute name="renderedContextMenu" required="false" default="true"/>
+    <composite:attribute name="formList" required="false" type="java.lang.String"/>
+
 
 </composite:interface>
 
 <composite:implementation>
 
-    <p:commandButton disabled="#{cc.attrs.disabledSave}" value="#{form.salvar}" action="#{cc.attrs.controller.save}"
-                     immediate="false" update="#{cc.attrs.update}" process="#{!empty cc.attrs.process ? cc.attrs.process : '@form'}"
-                     oncomplete="#{cc.attrs.saveComplete}" />
+    <p:toolbar>
+        <p:toolbarGroup>
+            <p:commandButton disabled="#{cc.attrs.disabledSave}" value="#{form.salvar}"
+                             action="#{cc.attrs.controller.save}"
+                             immediate="false" update="#{cc.attrs.update}"
+                             process="#{!empty cc.attrs.process ? cc.attrs.process : '@form'}"
+                             oncomplete="#{cc.attrs.saveComplete}"
+                             icon="fa fa-floppy-o"/>
 
-    <p:commandButton process="@this" value="#{form.cancelar}" action="#{cc.attrs.controller.reset}" update="#{cc.attrs.update}" immediate="true" />
+            <p:commandButton process="@this" value="#{form.cancelar}"
+                             action="#{cc.attrs.controller.reset}"
+                             update="#{cc.attrs.update}" immediate="true"
+                             icon="fa fa-times"/>
+            <p:commandButton value="#{form.lista}"
+                             action="#{cc.attrs.formList.toString}"
+                             immediate="true" ajax="false" icon="fa fa-list-alt"/>
 
+        </p:toolbarGroup>
+    </p:toolbar>
     <p:contextMenu rendered="#{cc.attrs.renderedContextMenu}">
         <p:menuitem disabled="#{cc.attrs.disabledSave}" value="#{form.salvar}" action="#{cc.attrs.controller.save}"
                     immediate="false" update="#{cc.attrs.update}" oncomplete="#{cc.attrs.saveComplete}"
                     process="#{!empty cc.attrs.process ? cc.attrs.process : '@form'}" icon="ui-icon-disk"/>
 
         <p:menuitem process="@this" value="#{form.cancelar}" action="#{cc.attrs.controller.reset}"
-                    update="#{cc.attrs.update}" immediate="true" icon="ui-icon-document" />
+                    update="#{cc.attrs.update}" immediate="true" icon="ui-icon-document"/>
     </p:contextMenu>
 
 </composite:implementation>

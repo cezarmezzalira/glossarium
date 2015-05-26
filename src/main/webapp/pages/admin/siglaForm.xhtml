@@ -1,9 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:components="http://java.sun.com/jsf/composite/components"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <ui:decorate template="template/padrao.xhtml">
     <ui:define name="titulo">
         <h:outputText value="#{form.cadastroSiglas}"/>
@@ -24,7 +24,7 @@
 
             <p:outputLabel value="#{form.significado}" for="significado"/>
             <p:inputTextarea value="#{siglaController.entity.significado}"
-                         label="#{form.significado}" id="significado"/>
+                             label="#{form.significado}" id="significado"/>
 
             <br/>
             <p:outputLabel value="Lingua" for="linguagem"/>
@@ -65,10 +65,8 @@
     </ui:define>
 
     <ui:define name="rodape">
-        <components:commandButtonForm update="@form" controller="#{siglaController}"/>
-
-        <p:commandButton value="#{form.pesquisarSiglas}" action="/pages/admin/siglaSearch.xhtml?faces-redirect=true"
-                         immediate="true" ajax="false" style="float: right"/>
+        <components:commandButtonForm update="@form" controller="#{siglaController}"
+                                      formList="/pages/admin/siglaSearch.xhtml?faces-redirect=true"/>
 
         <div style="clear: both"></div>
     </ui:define>

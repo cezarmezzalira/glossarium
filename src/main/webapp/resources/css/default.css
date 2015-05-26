@@ -3,5 +3,11 @@
 }
 
 *{
-    font-size: 12px;
+    font-size: 14px;
+}
+
+.panelNoBorder {
+    border: 0 !important;
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
 }
