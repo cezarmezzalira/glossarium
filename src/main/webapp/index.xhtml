@@ -9,7 +9,7 @@
         <ui:define name="conteudo">
             <h:form id="formPesquisa" style="padding: 0">
                 <p:panel id="panelParametros" toggleSpeed="500" toggleable="true"
-                         header="Parametros para pesquisa" styleClass="panelNoBorder">
+                         header="#{form.parametros}" styleClass="panelNoBorder">
                     <p:panelGrid columns="2" styleClass="centered">
 
                         <h:outputText for="termo" value="Digite o termo para pesquisar: "/>
@@ -34,7 +34,7 @@
                                         dropdown="true" forceSelection="true" size="75"/>
 
 
-                        <p:outputLabel value="Subárea" for="subarea"/>
+                        <p:outputLabel value="#{form.subarea}" for="subarea"/>
                         <p:autoComplete value="#{pesquisaTermoController.entity.subareaid}"
                                         completeMethod="#{pesquisaTermoController.completeSubArea()}"
                                         converter="#{subAreaConverter}"
