@@ -23,52 +23,11 @@ public class ReadWordUtil {
     public static final String EXTENSION_FILE_DOCX = ".docx";
     public static final String EXTENSION_FILE_ODT = ".odt";
 
+    private List<Termo> terms;
 
-    public static void readDocFile(String fileName) {
-
-        try {
-            File file = new File(fileName);
-            FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-
-            HWPFDocument doc = new HWPFDocument(fis);
-
-            WordExtractor we = new WordExtractor(doc);
-
-            String[] paragraphs = we.getParagraphText();
-
-            System.out.println("Total no of paragraph " + paragraphs.length);
-            for (String para : paragraphs) {
-                System.out.println(para.toString());
-            }
-            fis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public static List<String> readDocxFile(InputStream inputStream) {
-        List<String> terms = null;
-        try {
-            XWPFDocument document = new XWPFDocument(inputStream);
-
-            List<XWPFParagraph> paragraphs = document.getParagraphs();
-
-            System.out.println("Total no of paragraph " + paragraphs.size());
-            terms = new ArrayList<>();
-
-            for (XWPFParagraph para : paragraphs) {
-                terms.add(para.getText());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return terms;
-    }
 
     public static List<String> readDocFile(InputStream inputStream) {
-        List<String> terms = new ArrayList<>();
+        List<String> listTerms = new ArrayList<>();
         try {
             HWPFDocument document = new HWPFDocument(inputStream);
             Range range = document.getRange();
@@ -80,30 +39,51 @@ public class ReadWordUtil {
                 for (int y = 0; y < s.numParagraphs(); y++) {
                     Paragraph paragraph = s.getParagraph(y);
                     numParagraphs++;
-                    terms.add(paragraph.text());
+                    listTerms.add(paragraph.text());
                 }
             }
-
             System.out.println("Total no of paragraph " + numParagraphs);
-            //terms = new ArrayList<>();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return terms;
+        return listTerms;
     }
 
+    public static List<String> readDocxFile(InputStream inputStream) {
+        List<String> listTerms = null;
+        try {
+            XWPFDocument document = new XWPFDocument(inputStream);
 
-    public List<String> findTerms(List<String> paragraphs) {
-        List<String> terms = new ArrayList<>();
+            List<XWPFParagraph> paragraphs = document.getParagraphs();
+
+            System.out.println("Total no of paragraph " + paragraphs.size());
+            listTerms = new ArrayList<>();
+
+            for (XWPFParagraph para : paragraphs) {
+
+                listTerms.add(para.getText());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return listTerms;
+    }
+
+    public List<Termo> findTerms(List<String> paragraphs) {
+        terms = new ArrayList<>();
         int countWords = 0;
         //percorre a lista de paragrafos e transforma eles em listas de palavras...
-        for (String paragraph : paragraphs) {
+
+        for (int i = 0; i < paragraphs.size(); i++) {
+            String paragraph = paragraphs.get(i);
             //separa as palavras em
             String[] words = paragraph.split(" ");
 
-            for (int i = 0; i < words.length; i++) {
-                String word = words[i];
+
+            for (int j = 0; j < words.length; j++) {
+                String word = words[j];
                 countWords++;
 
                 //remove os pontos em caso de palavras que estão em finais de paragrafos.
@@ -116,28 +96,27 @@ public class ReadWordUtil {
 
                 if (!word.isEmpty()) {
 
-
                     //Se o primeiro caractere for maiusculo e o ultimo for fecha parenteses...
                     if ((Character.isUpperCase(word.charAt(0))) &&
                             (Character.compare(word.charAt(word.length() - 1), ')') == 0)) {
-                        if (validTerm(word)) {
-                            if (!terms.contains(removeParenthesis(word))) {
-                                terms.add(removeParenthesis(word));
-                            }
-                        }
+                        addTerm(word, i, j);
                     } //Se o primeiro caractere for abre parenteses e o ultimo for fecha parenteses...
                     else if ((Character.compare(word.charAt(0), '(') == 0) &&
                             (Character.compare(word.charAt(word.length() - 1), ')') == 0)) {
-                        if (validTerm(word)) {
-                            if (!terms.contains(removeParenthesis(word))) {
-                                terms.add(removeParenthesis(word));
-                            }
-                        }
+                        addTerm(word, i, j);
                     }
                 }
             }
         }
         return terms;
+    }
+
+    private void addTerm(String word, int paragraph, int position) {
+        if (validTerm(word)) {
+            if (!terms.contains(new Termo(removeParenthesis(word), 0, 0))) {
+                terms.add(new Termo(removeParenthesis(word), paragraph, position));
+            }
+        }
     }
 
 
@@ -159,5 +138,13 @@ public class ReadWordUtil {
 
     private String removeParenthesis(String word) {
         return word.replace('(', ' ').replace(')', ' ').trim();
+    }
+
+    public List<Termo> getTerms() {
+        return terms;
+    }
+
+    public void setTerms(List<Termo> terms) {
+        this.terms = terms;
     }
 }

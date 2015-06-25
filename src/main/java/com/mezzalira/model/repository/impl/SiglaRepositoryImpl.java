@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.Path;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -69,4 +70,15 @@ public class SiglaRepositoryImpl extends BaseRepository<Sigla> implements SiglaR
         return entityManager.createQuery(query).getResultList();
 
     }
+
+    @Override
+    public List<Sigla> findBySiglaIn(Set<String> termos) {
+        initialize();
+        Path<String> columnSigla = root.get("sigla");
+
+
+        return null;
+    }
+
+
 }

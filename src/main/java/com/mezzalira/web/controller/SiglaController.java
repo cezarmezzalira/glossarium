@@ -3,9 +3,11 @@ package com.mezzalira.web.controller;
 import com.mezzalira.model.entity.*;
 import com.mezzalira.model.framework.ICrudService;
 import com.mezzalira.model.service.*;
+import com.mezzalira.web.comparator.TermoComparator;
 import com.mezzalira.web.framework.CrudController;
 import com.mezzalira.web.model.SiglaDataModel;
 import com.mezzalira.web.util.ReadWordUtil;
+import com.mezzalira.web.util.Termo;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +50,9 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     @Autowired
     private UsuarioService usuarioService;
 
-
     private ReadWordUtil readWordUtil;
 
-    private List<String> terms = new ArrayList<>();
-
-
-
-
-    private Part arquivoDoc;
+    private List<Termo> terms = new ArrayList<>();
 
     private String destination = "";
 
@@ -76,7 +72,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
 
     @Override
     public void find() {
-        if (!entity.getSigla().equals(""))
+        if (entity.getSigla() != null)
             lsEntity = siglaService.findBySigla(entity.getSigla());
         else
             lsEntity = siglaService.findAll();
@@ -107,10 +103,10 @@ public class SiglaController extends CrudController<Sigla, Integer> {
             terms = readWordUtil.findTerms(paragrafos);
             StringBuilder builder = new StringBuilder("Termos: ");
 
-            terms.sort(Comparator.<String>naturalOrder());
+            Collections.sort(terms, new TermoComparator());
 
-            for (String term : terms) {
-                builder.append(term).append(" - ");
+            for (Termo term : terms) {
+                builder.append(term.getTermo()).append(" - ");
             }
 
             System.out.println(builder.toString());
@@ -186,11 +182,11 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     }
 
 
-    public List<String> getTerms() {
+    public List<Termo> getTerms() {
         return terms;
     }
 
-    public void setTerms(List<String> terms) {
+    public void setTerms(List<Termo> terms) {
         this.terms = terms;
     }
 

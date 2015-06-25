@@ -15,11 +15,12 @@
                           update="listTermos"/>
 
 
-            <p:dataList id="listTermos" value="#{siglaController.terms}" var="term" type="ordered">
+            <p:dataList id="listTermos" value="#{siglaController.terms}"
+                        var="term" type="ordered" >
                 <f:facet name="header">
                     Termos
                 </f:facet>
-                #{term}
+                #{term.getTermo()}
             </p:dataList>
         </h:form>
     </ui:define>
