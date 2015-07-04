@@ -54,7 +54,13 @@ public class SiglaController extends CrudController<Sigla, Integer> {
 
     private List<Termo> terms = new ArrayList<>();
 
+    private List<Sigla> siglas = new ArrayList<>();
+
+    private SiglaDataModel siglaDataModel;
+
     private String destination = "";
+    private String fileName = "";
+    private String fileExtension = "";
 
     public SiglaController() {
         this.destination = "/home/cezar/dev/temp/";
@@ -86,16 +92,15 @@ public class SiglaController extends CrudController<Sigla, Integer> {
 
     public void readArquivo(InputStream inputStream, String fileExtension) {
 
-        //"C:\\multi\\TCC_CezarAugustoMezzalira.docx"
         readWordUtil = new ReadWordUtil();
 
         List<String> paragrafos = new ArrayList<>();
 
         //Verifica a extensão do arquivo e executa o método correto.
         if (ReadWordUtil.EXTENSION_FILE_DOCX.equalsIgnoreCase(fileExtension)) {
-            paragrafos = ReadWordUtil.readDocxFile(inputStream);
+            paragrafos = readWordUtil.readDocxFile(inputStream);
         } else if (ReadWordUtil.EXTENSION_FILE_DOC.equalsIgnoreCase(fileExtension)) {
-            paragrafos = ReadWordUtil.readDocFile(inputStream);
+            paragrafos = readWordUtil.readDocFile(inputStream);
         }
 
 
@@ -113,7 +118,6 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         } else {
             addMessage(new FacesMessage("Nenhum termo foi encontrado no documento carregado."));
         }
-
     }
 
 
@@ -123,9 +127,9 @@ public class SiglaController extends CrudController<Sigla, Integer> {
             copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
 
             //faz analise do arquivo que foi recebido
-            String fileName = event.getFile().getFileName();
+            fileName = event.getFile().getFileName();
 
-            String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+            fileExtension = fileName.substring(fileName.lastIndexOf("."));
             readArquivo(event.getFile().getInputstream(), fileExtension);
         } catch (IOException e) {
             e.printStackTrace();
@@ -156,6 +160,25 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         }
     }
 
+    public void pesquisarSiglas(){
+        //converte a lista em set para fazer a pesquisa no banco
+        Set<String> termos = new HashSet<>();
+        for (Termo termo : terms){
+            termos.add(termo.getTermo());
+        }
+
+        //faz a consulta das siglas que estavam no documento
+        siglas = siglaService.findBySiglaIn(termos);
+
+        addToModel();
+
+    }
+
+    private void addToModel() {
+        siglaDataModel = new SiglaDataModel(siglas);
+    }
+
+
     public void findNaoAprovados() {
         lsEntity = siglaService.findByDataAprovada();
     }
@@ -178,6 +201,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     }
 
     public void reset() {
+        entity = new Sigla();
         RequestContext.getCurrentInstance().execute("PF('cadSigla').hide()");
     }
 
@@ -190,4 +214,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         this.terms = terms;
     }
 
+    public SiglaDataModel getSiglaDataModel() {
+        return siglaDataModel;
+    }
 }

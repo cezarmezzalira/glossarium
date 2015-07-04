@@ -1,5 +1,6 @@
 package com.mezzalira.web.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.hwpf.usermodel.Paragraph;
@@ -7,6 +8,7 @@ import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.hwpf.usermodel.Section;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,11 +28,11 @@ public class ReadWordUtil {
     private List<Termo> terms;
 
 
-    public static List<String> readDocFile(InputStream inputStream) {
+    public List<String> readDocFile(InputStream inputStream) {
         List<String> listTerms = new ArrayList<>();
         try {
-            HWPFDocument document = new HWPFDocument(inputStream);
-            Range range = document.getRange();
+            HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
+            Range range = hwpfDocument.getRange();
 
             int numParagraphs = 0;
 
@@ -50,12 +52,12 @@ public class ReadWordUtil {
         return listTerms;
     }
 
-    public static List<String> readDocxFile(InputStream inputStream) {
+    public List<String> readDocxFile(InputStream inputStream) {
         List<String> listTerms = null;
         try {
-            XWPFDocument document = new XWPFDocument(inputStream);
+            XWPFDocument xwpfDocument = new XWPFDocument(inputStream);
 
-            List<XWPFParagraph> paragraphs = document.getParagraphs();
+            List<XWPFParagraph> paragraphs = xwpfDocument.getParagraphs();
 
             System.out.println("Total no of paragraph " + paragraphs.size());
             listTerms = new ArrayList<>();
@@ -135,6 +137,7 @@ public class ReadWordUtil {
 
         return isTerm;
     }
+
 
     private String removeParenthesis(String word) {
         return word.replace('(', ' ').replace(')', ' ').trim();

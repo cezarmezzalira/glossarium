@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -77,5 +78,10 @@ public class SiglaServiceImpl extends CrudService<Sigla, Integer> implements Sig
     @Override
     public List<Sigla> findByDataAprovada() {
         return siglaRepository.findByDataAprovada();
+    }
+
+    @Override
+    public List<Sigla> findBySiglaIn(Set<String> termos) {
+        return siglaRepository.findBySiglaIn(termos);
     }
 }

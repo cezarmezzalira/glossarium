@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Set;
 
@@ -75,9 +76,16 @@ public class SiglaRepositoryImpl extends BaseRepository<Sigla> implements SiglaR
     public List<Sigla> findBySiglaIn(Set<String> termos) {
         initialize();
         Path<String> columnSigla = root.get("sigla");
+        query.select(root).orderBy(criterio.asc(columnSigla));
 
+        //Crio um predicate In
+        CriteriaBuilder.In<Object> in = criterio.in(columnSigla);
+        for(String termo : termos){
+            in.value(termo);
+        }
+        and(in);
 
-        return null;
+        return entityManager.createQuery(query).getResultList();
     }
 
 
