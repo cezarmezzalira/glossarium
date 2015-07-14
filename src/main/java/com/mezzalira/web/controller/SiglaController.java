@@ -3,11 +3,14 @@ package com.mezzalira.web.controller;
 import com.mezzalira.model.entity.*;
 import com.mezzalira.model.framework.ICrudService;
 import com.mezzalira.model.service.*;
+import com.mezzalira.web.comparator.SiglaComparator;
 import com.mezzalira.web.comparator.TermoComparator;
 import com.mezzalira.web.framework.CrudController;
 import com.mezzalira.web.model.SiglaDataModel;
 import com.mezzalira.web.util.ReadWordUtil;
+import com.mezzalira.web.util.ReplaceWordUtil;
 import com.mezzalira.web.util.Termo;
+import com.mezzalira.web.util.WordPOIUtil;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +64,11 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     private String destination = "";
     private String fileName = "";
     private String fileExtension = "";
+    private List<Sigla> itensAdicionados;
 
     public SiglaController() {
         this.destination = "/home/cezar/dev/temp/";
+        itensAdicionados = new ArrayList<>();
     }
 
     @Override
@@ -160,10 +165,11 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         }
     }
 
-    public void pesquisarSiglas(){
+    public void pesquisarSiglas() {
+        
         //converte a lista em set para fazer a pesquisa no banco
         Set<String> termos = new HashSet<>();
-        for (Termo termo : terms){
+        for (Termo termo : terms) {
             termos.add(termo.getTermo());
         }
 
@@ -172,6 +178,69 @@ public class SiglaController extends CrudController<Sigla, Integer> {
 
         addToModel();
 
+    }
+
+    public void atualizarDocumento() {
+
+        String path = destination + fileName;
+        String pathDownload = destination + "Glossarium_" + fileName;
+
+        /*try {
+            File file = new File(path);
+            FileInputStream inputStream = new FileInputStream(file);
+            //crio uma instancia da classe que irá alterar o texto
+            ReplaceWordUtil replaceWordUtil = new ReplaceWordUtil(inputStream);
+            //Recupero somente as palavras selecionadas
+            HashMap<String, String> words;
+            words = getListToReplace();
+
+            replaceWordUtil.replaceMap(words, pathDownload);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }*/
+        WordPOIUtil wordPOIUtil = new WordPOIUtil();
+        //Recupero somente as palavras selecionadas
+        HashMap<String, String> words;
+        words = getListToReplace();
+        wordPOIUtil.replaceAndGenerateWord(path, pathDownload, words);
+
+
+    }
+
+    //Caso necessite, posso utilizar este método para criar um HashSet ordenado.
+    //Cezar 05-04-2015
+    public void adicionarNaLista() {
+        for (Sigla sigla : siglas) {
+
+            if (!itensAdicionados.contains(sigla)) {
+                itensAdicionados.add(sigla);
+            }
+        }
+        //Ordeno a lista depois de inserir os dados para que a visualização do relatório fique correta.
+        Collections.sort(itensAdicionados, new SiglaComparator());
+    }
+
+    private HashMap<String, String> getListToReplace() {
+
+        HashMap<String, String> words = new HashMap<>();
+        for (Sigla sigla : siglas) {
+            if (!words.containsKey(sigla.getSigla())) {
+
+                //concateno parenteses, porque é como a sigla aparece em um paragrafo.
+                StringBuilder word = new StringBuilder();
+                word.append("(").append(sigla.getSigla()).append(")");
+
+                //A sigla sera substituida pelo seu significado e na sequencia por ela mesma entre parenteses
+                StringBuilder replaceTo = new StringBuilder();
+                replaceTo.append(sigla.getSignificado()).append(" ").append(word.toString());
+
+
+                words.put(word.toString(), replaceTo.toString());
+            }
+        }
+
+        return words;
     }
 
     private void addToModel() {
@@ -207,6 +276,9 @@ public class SiglaController extends CrudController<Sigla, Integer> {
 
 
     public List<Termo> getTerms() {
+//        if (terms == null){
+//            terms = new ArrayList<>();
+//        }
         return terms;
     }
 

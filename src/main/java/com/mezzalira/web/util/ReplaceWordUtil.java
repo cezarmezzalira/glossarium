@@ -1,16 +1,14 @@
 package com.mezzalira.web.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.*;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cezar on 03/07/15.
@@ -65,6 +63,29 @@ public class ReplaceWordUtil {
             replaceOnParagraph(xwpfParagraph, searchValue, replacement);
         }
     }
+    private long replaceParagraphsHash(HashMap<String, String> replacements, List<XWPFParagraph> xwpfParagraphs) {
+        long count = 0;
+        for (XWPFParagraph paragraph : xwpfParagraphs) {
+            List<XWPFRun> runs = paragraph.getRuns();
+
+            for (Map.Entry<String, String> replPair : replacements.entrySet()) {
+                String find = replPair.getKey();
+                String repl = replPair.getValue();
+                TextSegement found = paragraph.searchText(find, new PositionInParagraph());
+                //se encontrar a sigla em alguns trechos
+                if (found != null) {
+                    count++;
+                    // whole search string is in one Run
+                    XWPFRun run = runs.get(found.getBeginRun());
+                    String runText = run.getText(run.getTextPosition());
+                    String replaced = runText.replace(find, repl);
+                    run.setText(replaced, 0);
+                }
+            }
+        }
+        return count;
+    }
+
 
     /**
      * Método que substitui a palavra no paragrafo
@@ -113,7 +134,63 @@ public class ReplaceWordUtil {
     }
 
     private boolean hasReplaceableItem(String runText, String searchValue) {
+        //System.out.printf(runText);
+
         return StringUtils.contains(runText, searchValue);
     }
+
+    /**
+     * Código retirado de
+     * http://stackoverflow.com/questions/8398259/replace-table-column-value-in-apache-poi?rq=1
+     *
+     * @param replacements
+     * @param xwpfParagraphs
+     * @return
+
+    private long replaceInParagraphs(Map<String, String> replacements, List<XWPFParagraph> xwpfParagraphs) {
+        long count = 0;
+        for (XWPFParagraph paragraph : xwpfParagraphs) {
+            List<XWPFRun> runs = paragraph.getRuns();
+
+            for (Map.Entry<String, String> replPair : replacements.entrySet()) {
+                String find = replPair.getKey();
+                String repl = replPair.getValue();
+                TextSegement found = paragraph.searchText(find, new PositionInParagraph());
+                //se encontrar a sigla em alguns trechos
+                if (found != null) {
+                    count++;
+                    if (found.getBeginRun() == found.getEndRun()) {
+                        // whole search string is in one Run
+                        XWPFRun run = runs.get(found.getBeginRun());
+                        String runText = run.getText(run.getTextPosition());
+                        String replaced = runText.replace(find, repl);
+                        run.setText(replaced, 0);
+                    } else {
+                        // The search string spans over more than one Run
+                        // Put the Strings together
+                        StringBuilder b = new StringBuilder();
+                        for (int runPos = found.getBeginRun(); runPos <= found.getEndRun(); runPos++) {
+                            XWPFRun run = runs.get(runPos);
+                            b.append(run.getText(run.getTextPosition()));
+                        }
+                        String connectedRuns = b.toString();
+                        String replaced = connectedRuns.replace(find, repl);
+
+                        // The first Run receives the replaced String of all connected Runs
+                        XWPFRun partOne = runs.get(found.getBeginRun());
+                        partOne.setText(replaced, 0);
+                        // Removing the text in the other Runs.
+                        for (int runPos = found.getBeginRun() + 1; runPos <= found.getEndRun(); runPos++) {
+                            XWPFRun partNext = runs.get(runPos);
+                            partNext.setText("", 0);
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
+     */
+
 
 }

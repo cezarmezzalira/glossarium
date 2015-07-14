@@ -6,81 +6,74 @@
 <ui:decorate template="/resources/template/default.xhtml">
 
     <ui:define name="conteudo">
-        <h:form id="formListaTerms" enctype="multipart/form-data">
+        <h:form id="formPesquisa" enctype="multipart/form-data">
+            <p:panel id="panelParametros" header="Faça upload do arquivo para poder pesquisar as siglas que existem no texto">
+                <p:fileUpload fileUploadListener="#{siglaController.upload}"
+                              allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
+                              description="Selecione o arquivo"
+                              mode="advanced" dragDropSupport="true"
+                              fileLimit="1" fileLimitMessage="Só é possível efetuar upload de um arquivo"
+                              update="@form" process="@form" styleClass="panelNoBorder" style="margin-top: 10px;"/>
+
+                <p:dataList id="listTermos" value="#{siglaController.terms}"
+                            var="term" type="ordered" styleClass="panelNoBorder" style="margin-top: 10px;">
+                    <f:facet name="header">
+                        Termos
+                    </f:facet>
+                    #{term.getTermo()}
+                    <f:facet name="footer">
+                        <p:commandButton id="pesquisaSiglas" value="Pesquisar Siglas"
+                                         icon="fa fa-search"
+                                         process="@form" update="@form"
+                                         action="#{siglaController.pesquisarSiglas()}"
+                                         disabled="#{siglaController.terms == null}"/>
+                    </f:facet>
+                </p:dataList>
+
+                <p:dataTable id="listaResultados"
+                             styleClass="panelNoBorder" style="margin-top: 10px;"
+                             value="#{siglaController.siglaDataModel}" var="item"
+                             emptyMessage="#{msg.nenhum_registro_encontrado}"
+                             selection="#{pesquisaTermoController.siglas}"
+                             rowKey="#{item.siglaid}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+
+                    <f:facet name="header">
+                        Resultados da pesquisa
+                    </f:facet>
+
+                    <p:column selectionMode="multiple" style="width:10%"/>
 
 
+                    <p:column style="text-align: center" width="20%" sortBy="#{item.sigla}">
+                        <f:facet name="header">Sigla</f:facet>
+                        <h:outputText style="font-style: italic"
+                                      rendered="#{item.linguaid.estrangeira == 1}"
+                                      value="#{item.sigla}"/>
+                        <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
+                                      value="#{item.sigla}"/>
+                    </p:column>
+
+                    <p:column width="70%">
+                        <f:facet name="header">Significado</f:facet>
+                        <h:outputText style="font-style: italic"
+                                      rendered="#{item.linguaid.estrangeira == 1}"
+                                      value="#{item.significado}"/>
+                        <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
+                                      value="#{item.significado}"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="atualizarDocDownload" value="Baixar Arquivo Atualizado"
+                                         icon="fa fa-download"
+                                         process="@form" update="@form"
+                                         action="#{siglaController.atualizarDocumento()}"/>
+                    </f:facet>
+
+                </p:dataTable>
 
 
-            <p:tabView orientation="left" id="tabView">
-                <p:tab title="Upload do arquivo" id="tabUpload">
-                    <p:fileUpload fileUploadListener="#{siglaController.upload}"
-                                  allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
-                                  description="Selecione o arquivo"
-                                  mode="advanced" dragDropSupport="true"
-                                  fileLimit="1" fileLimitMessage="Só é possível efetuar upload de um arquivo"
-                                  update="@form" process="@form"
-                            oncomplete="tabView.select(1); return false;"/>
-                </p:tab>
-                <p:tab title="Pesquisar siglas no Glossarium" id="tabPesquisa">
-                    <p:dataList id="listTermos" value="#{siglaController.terms}"
-                                var="term" type="ordered" >
-                        <f:facet name="header">
-                            Termos
-                        </f:facet>
-                        #{term.getTermo()}
-                        <f:facet name="footer">
-                            <p:commandButton id="pesquisaSiglas" value="Pesquisar Siglas"
-                                             icon="fa fa-search"
-                                             process="@form" update="@form"
-                                             action="#{siglaController.pesquisarSiglas()}"/>
-                        </f:facet>
-                    </p:dataList>
-                </p:tab>
-                <p:tab title="Resultado da Pesquisa Glossarium" id="tabResultados">
-                    <p:dataTable id="listaResultados"
-                                 value="#{siglaController.siglaDataModel}" var="item"
-                                 emptyMessage="#{msg.nenhum_registro_encontrado}"
-                                 selection="#{pesquisaTermoController.siglas}"
-                                 rowKey="#{item.siglaid}"
-                                 paginator="true" rows="10" paginatorPosition="bottom">
-
-                        <f:facet name="header">
-                            Resultados da pesquisa
-                        </f:facet>
-
-                        <p:column selectionMode="multiple" style="width:10%"/>
-
-
-                        <p:column style="text-align: center" width="20%" sortBy="#{item.sigla}">
-                            <f:facet name="header">Sigla</f:facet>
-                            <h:outputText style="font-style: italic"
-                                          rendered="#{item.linguaid.estrangeira == 1}"
-                                          value="#{item.sigla}"/>
-                            <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
-                                          value="#{item.sigla}"/>
-                        </p:column>
-
-                        <p:column width="70%">
-                            <f:facet name="header">Significado</f:facet>
-                            <h:outputText style="font-style: italic"
-                                          rendered="#{item.linguaid.estrangeira == 1}"
-                                          value="#{item.significado}"/>
-                            <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
-                                          value="#{item.significado}"/>
-                        </p:column>
-
-                        <f:facet name="footer">
-                            <p:commandButton id="incluirNaListaButton" value="Incluir na Lista"
-                                             icon="fa fa-list-alt"
-                                             process="@form" update="@form"
-                                             action="#{pesquisaTermoController.adicionarNaLista()}"/>
-                        </f:facet>
-
-                    </p:dataTable>
-                </p:tab>
-            </p:tabView>
-
-
+            </p:panel>
         </h:form>
     </ui:define>
 
