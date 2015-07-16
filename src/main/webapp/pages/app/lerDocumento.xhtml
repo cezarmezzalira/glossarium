@@ -7,7 +7,8 @@
 
     <ui:define name="conteudo">
         <h:form id="formPesquisa" enctype="multipart/form-data">
-            <p:panel id="panelParametros" header="Faça upload do arquivo para poder pesquisar as siglas que existem no texto">
+            <p:panel id="panelParametros"
+                     header="Faça upload do arquivo para poder pesquisar as siglas que existem no texto">
                 <p:fileUpload fileUploadListener="#{siglaController.upload}"
                               allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
                               description="Selecione o arquivo"
@@ -67,7 +68,8 @@
                         <p:commandButton id="atualizarDocDownload" value="Baixar Arquivo Atualizado"
                                          icon="fa fa-download"
                                          process="@form" update="@form"
-                                         action="#{siglaController.atualizarDocumento()}"/>
+                                         action="#{siglaController.atualizarDocumento()}"
+                                         ajax="false" immediate="true"/>
                     </f:facet>
 
                 </p:dataTable>

@@ -105,12 +105,25 @@
         </h:form>
         <ui:insert name="foraDoForm"/>
 
-        <p:ajaxStatus onstart="statusDialog.show();"
-                      onsuccess="statusDialog.hide();"/>
+
+        <script type="text/javascript">
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+        </script>
+
+        <p:ajaxStatus onstart="PF('statusDialog').show();"
+                      onsuccess="PF('statusDialog').hide();"/>
         <p:dialog modal="true" widgetVar="statusDialog" header="Status"
                   draggable="false" closable="false">
             <p:graphicImage value="#{resource['images/ajax-loader.gif']}" />
         </p:dialog>
+
+
     </f:view>
 </h:body>
 </html>

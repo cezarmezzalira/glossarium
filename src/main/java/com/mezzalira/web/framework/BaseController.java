@@ -4,11 +4,17 @@ import org.primefaces.context.RequestContext;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Esta classe prove metodos utilizados em um projeto JSF, existem metodos responsaveis
  * por recuperar os contextos de request e faces e tambem adicionar mensagens aos contextos.
  * Algumas funcoes muito utilizadas em todos controllers tambem sao providas por esta classe.
+ *
  * @author Gaspar
  */
 public abstract class BaseController {
@@ -52,8 +58,7 @@ public abstract class BaseController {
         getFacesContext().addMessage(null, message);
     }
 
-    protected void executeJS(String metodoJs){
+    protected void executeJS(String metodoJs) {
         getRequestContext().execute(metodoJs);
     }
-
 }

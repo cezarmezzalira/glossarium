@@ -8,17 +8,21 @@ import com.mezzalira.web.comparator.TermoComparator;
 import com.mezzalira.web.framework.CrudController;
 import com.mezzalira.web.model.SiglaDataModel;
 import com.mezzalira.web.util.ReadWordUtil;
-import com.mezzalira.web.util.ReplaceWordUtil;
 import com.mezzalira.web.util.Termo;
 import com.mezzalira.web.util.WordPOIUtil;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import javax.faces.application.FacesMessage;
-import javax.servlet.http.Part;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
@@ -65,6 +69,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     private String fileName = "";
     private String fileExtension = "";
     private List<Sigla> itensAdicionados;
+    private StreamedContent fileDownload;
 
     public SiglaController() {
         this.destination = "/home/cezar/dev/temp/";
@@ -166,7 +171,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     }
 
     public void pesquisarSiglas() {
-        
+
         //converte a lista em set para fazer a pesquisa no banco
         Set<String> termos = new HashSet<>();
         for (Termo termo : terms) {
@@ -185,26 +190,61 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         String path = destination + fileName;
         String pathDownload = destination + "Glossarium_" + fileName;
 
-        /*try {
-            File file = new File(path);
-            FileInputStream inputStream = new FileInputStream(file);
-            //crio uma instancia da classe que irá alterar o texto
-            ReplaceWordUtil replaceWordUtil = new ReplaceWordUtil(inputStream);
-            //Recupero somente as palavras selecionadas
-            HashMap<String, String> words;
-            words = getListToReplace();
-
-            replaceWordUtil.replaceMap(words, pathDownload);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }*/
         WordPOIUtil wordPOIUtil = new WordPOIUtil();
         //Recupero somente as palavras selecionadas
         HashMap<String, String> words;
         words = getListToReplace();
         wordPOIUtil.replaceAndGenerateWord(path, pathDownload, words);
 
+
+        //chamo a tela para download
+        //RequestContext.getCurrentInstance().execute("PF('dialogDownload').show()");
+        try {
+            downloadFile(pathDownload, fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void downloadFile(String pathDownload, String fileNameDownload) throws IOException{
+
+        //Cria instancia do arquivo
+        File file = new File(pathDownload);
+
+        // Get HTTP response
+        HttpServletResponse response = (HttpServletResponse) getFacesContext().getExternalContext().getResponse();
+
+        ExternalContext ec = getFacesContext().getExternalContext();
+
+        ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
+        ec.setResponseContentType("application/msword"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
+        ec.setResponseHeader("Content-Disposition", "attachment; filename=\"Glossarium_" + fileName + "\""); // The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
+
+        // Open response output stream
+        OutputStream responseOutputStream = ec.getResponseOutputStream();
+
+        // Read PDF contents
+        FileInputStream fileInputStream = new FileInputStream(file);
+        // Read PDF contents and write them to the output
+        byte[] bytesBuffer = new byte[2048];
+        int bytesRead;
+        while ((bytesRead = fileInputStream.read(bytesBuffer)) > 0) {
+            responseOutputStream.write(bytesBuffer, 0, bytesRead);
+        }
+
+        // Make sure that everything is out
+        responseOutputStream.flush();
+
+        // Close both streams
+        fileInputStream.close();
+        responseOutputStream.close();
+
+        // JSF doc:
+        // Signal the JavaServer Faces implementation that the HTTP response for this request has already been generated
+        // (such as an HTTP redirect), and that the request processing lifecycle should be terminated
+        // as soon as the current phase is completed.
+        getFacesContext().responseComplete();
 
     }
 
@@ -276,10 +316,11 @@ public class SiglaController extends CrudController<Sigla, Integer> {
 
 
     public List<Termo> getTerms() {
-//        if (terms == null){
-//            terms = new ArrayList<>();
-//        }
         return terms;
+    }
+
+    public StreamedContent getFileDownload() {
+        return fileDownload;
     }
 
     public void setTerms(List<Termo> terms) {
@@ -289,4 +330,6 @@ public class SiglaController extends CrudController<Sigla, Integer> {
     public SiglaDataModel getSiglaDataModel() {
         return siglaDataModel;
     }
+
+
 }
