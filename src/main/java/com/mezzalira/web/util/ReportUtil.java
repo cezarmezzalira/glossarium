@@ -1,7 +1,7 @@
 package com.mezzalira.web.util;
 
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine .JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import javax.faces.context.ExternalContext;

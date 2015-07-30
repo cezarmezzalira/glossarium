@@ -25,7 +25,7 @@ public class ReadWordUtil {
     public static final String EXTENSION_FILE_DOCX = ".docx";
     public static final String EXTENSION_FILE_ODT = ".odt";
 
-    private List<Termo> terms;
+    private List<String> terms;
 
 
     public List<String> readDocFile(InputStream inputStream) {
@@ -73,7 +73,7 @@ public class ReadWordUtil {
         return listTerms;
     }
 
-    public List<Termo> findTerms(List<String> paragraphs) {
+    public List<String> findTerms(List<String> paragraphs) {
         terms = new ArrayList<>();
         int countWords = 0;
         //percorre a lista de paragrafos e transforma eles em listas de palavras...
@@ -101,11 +101,11 @@ public class ReadWordUtil {
                     //Se o primeiro caractere for maiusculo e o ultimo for fecha parenteses...
                     if ((Character.isUpperCase(word.charAt(0))) &&
                             (Character.compare(word.charAt(word.length() - 1), ')') == 0)) {
-                        addTerm(word, i, j);
+                        addTerm(word);
                     } //Se o primeiro caractere for abre parenteses e o ultimo for fecha parenteses...
                     else if ((Character.compare(word.charAt(0), '(') == 0) &&
                             (Character.compare(word.charAt(word.length() - 1), ')') == 0)) {
-                        addTerm(word, i, j);
+                        addTerm(word);
                     }
                 }
             }
@@ -113,10 +113,10 @@ public class ReadWordUtil {
         return terms;
     }
 
-    private void addTerm(String word, int paragraph, int position) {
+    private void addTerm(String word) {
         if (validTerm(word)) {
-            if (!terms.contains(new Termo(removeParenthesis(word), 0, 0))) {
-                terms.add(new Termo(removeParenthesis(word), paragraph, position));
+            if (!terms.contains(removeParenthesis(word))) {
+                terms.add(removeParenthesis(word));
             }
         }
     }
@@ -143,11 +143,11 @@ public class ReadWordUtil {
         return word.replace('(', ' ').replace(')', ' ').trim();
     }
 
-    public List<Termo> getTerms() {
+    public List<String> getTerms() {
         return terms;
     }
 
-    public void setTerms(List<Termo> terms) {
+    public void setTerms(List<String> terms) {
         this.terms = terms;
     }
 }

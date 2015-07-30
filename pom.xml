@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -43,6 +44,11 @@
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
             <id>eclipselink</id>
             <layout>default</layout>
+            <name>Repository for library EclipseLink (JPA 2.1)</name>
+        </repository>
+        <repository>
+            <url>https://repository.liferay.com/nexus/content/groups/public/</url>
+            <id>liferay</id>
             <name>Repository for library EclipseLink (JPA 2.1)</name>
         </repository>
     </repositories>
@@ -134,11 +140,24 @@
             <version>1.0.10</version>
         </dependency>
 
-        <!-- Utilizado pelo PrimeFaces para exportar arquivos para pdf -->
+        <!-- Utilizado pelo PrimeFaces para exportar arquivos para pdf-->
         <dependency>
             <groupId>com.lowagie</groupId>
             <artifactId>itext</artifactId>
             <version>2.1.7</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--Jasper Reports-->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>5.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>4.0.0</version>
         </dependency>
 
         <!-- Log -->
@@ -320,18 +339,6 @@
             <version>2.2.1</version>
         </dependency>
 
-        <!--Jasper Reports-->
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>5.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>4.0.0</version>
-        </dependency>
 
         <dependency>
             <groupId>commons-beanutils</groupId>

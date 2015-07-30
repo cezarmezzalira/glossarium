@@ -9,13 +9,16 @@ public class Termo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String termo;
-    private Integer paragrafo;
-    private Integer numPalavra;
+    private String signficado;
+    private Boolean estrangeiro;
 
-    public Termo(String termo, Integer paragrafo, Integer numPalavra) {
+    public Termo(String termo, String signficado, Boolean estrangeiro) {
         this.termo = termo;
-        this.paragrafo = paragrafo;
-        this.numPalavra = numPalavra;
+        this.signficado = signficado;
+        this.estrangeiro = estrangeiro;
+    }
+
+    public Termo() {
     }
 
     public String getTermo() {
@@ -26,20 +29,20 @@ public class Termo implements Serializable {
         this.termo = termo;
     }
 
-    public Integer getParagrafo() {
-        return paragrafo;
+    public String getSignficado() {
+        return signficado;
     }
 
-    public void setParagrafo(Integer paragrafo) {
-        this.paragrafo = paragrafo;
+    public void setSignficado(String signficado) {
+        this.signficado = signficado;
     }
 
-    public Integer getNumPalavra() {
-        return numPalavra;
+    public Boolean getEstrangeiro() {
+        return estrangeiro;
     }
 
-    public void setNumPalavra(Integer numPalavra) {
-        this.numPalavra = numPalavra;
+    public void setEstrangeiro(Boolean estrangeiro) {
+        this.estrangeiro = estrangeiro;
     }
 
     @Override

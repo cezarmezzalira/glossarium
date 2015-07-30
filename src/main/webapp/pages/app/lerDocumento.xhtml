@@ -21,7 +21,7 @@
                     <f:facet name="header">
                         Termos
                     </f:facet>
-                    #{term.getTermo()}
+                    #{term}
                     <f:facet name="footer">
                         <p:commandButton id="pesquisaSiglas" value="Pesquisar Siglas"
                                          icon="fa fa-search"
@@ -31,19 +31,25 @@
                     </f:facet>
                 </p:dataList>
 
-                <p:dataTable id="listaResultados"
-                             styleClass="panelNoBorder" style="margin-top: 10px;"
+                <p:dataTable id="listaSelecionados"
                              value="#{siglaController.siglaDataModel}" var="item"
                              emptyMessage="#{msg.nenhum_registro_encontrado}"
-                             selection="#{pesquisaTermoController.siglas}"
+                             selection="#{siglaController.siglas}"
                              rowKey="#{item.siglaid}"
-                             paginator="true" rows="10" paginatorPosition="bottom">
+                             paginator="true" rows="15" paginatorPosition="bottom">
 
                     <f:facet name="header">
                         Resultados da pesquisa
                     </f:facet>
 
+
                     <p:column selectionMode="multiple" style="width:10%"/>
+
+                    <p:ajax event="rowSelect" listener="#{siglaController.onRowSelect}"/>
+                    <p:ajax event="rowUnselect" listener="#{siglaController.onRowUnselect}" />
+                    <p:ajax event="rowSelectCheckbox" listener="#{siglaController.onRowSelect}"/>
+
+
 
 
                     <p:column style="text-align: center" width="20%" sortBy="#{item.sigla}">
@@ -63,18 +69,16 @@
                         <h:outputText rendered="#{item.linguaid.estrangeira == 0}"
                                       value="#{item.significado}"/>
                     </p:column>
-
                     <f:facet name="footer">
-                        <p:commandButton id="atualizarDocDownload" value="Baixar Arquivo Atualizado"
-                                         icon="fa fa-download"
-                                         process="@form" update="@form"
-                                         action="#{siglaController.atualizarDocumento()}"
-                                         ajax="false" immediate="true"/>
-                    </f:facet>
 
+                    </f:facet>
                 </p:dataTable>
 
-
+                <p:commandButton id="atualizarDocDownload" value="Baixar Arquivo Atualizado"
+                                 icon="fa fa-download"
+                                 process="listaSelecionados"
+                                 action="#{siglaController.atualizarDocumento()}"
+                                 ajax="false" immediate="true"/>
             </p:panel>
         </h:form>
     </ui:define>

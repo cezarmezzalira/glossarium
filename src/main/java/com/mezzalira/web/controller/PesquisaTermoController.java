@@ -10,6 +10,8 @@ import com.mezzalira.web.model.SiglaDataModel;
 import com.mezzalira.web.report.SiglaReport;
 import com.mezzalira.web.report.UtilReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -51,6 +53,7 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
     private List<Sigla> itensAdicionados = new ArrayList<>();
 
     private Sigla[] siglas;
+
     private UtilReport utilReport;
 
     public void limparCampos() {
@@ -153,4 +156,6 @@ public class PesquisaTermoController extends CrudController<Sigla, Integer> {
     public boolean getListaTemTermos() {
         return !(getItensAdicionados().size() > 0);
     }
+
+
 }
