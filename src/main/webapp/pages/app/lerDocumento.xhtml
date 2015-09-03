@@ -17,6 +17,7 @@
                               update="@form" process="@form" styleClass="panelNoBorder" style="margin-top: 10px;"/>
 
                 <p:dataList id="listTermos" value="#{siglaController.terms}"
+                            emptyMessage="#{msg.nenhum_registro_encontrado}"
                             var="term" type="ordered" styleClass="panelNoBorder" style="margin-top: 10px;">
                     <f:facet name="header">
                         Termos
@@ -45,11 +46,9 @@
 
                     <p:column selectionMode="multiple" style="width:10%"/>
 
-                    <p:ajax event="rowSelect" listener="#{siglaController.onRowSelect}"/>
-                    <p:ajax event="rowUnselect" listener="#{siglaController.onRowUnselect}" />
-                    <p:ajax event="rowSelectCheckbox" listener="#{siglaController.onRowSelect}"/>
-
-
+                    <p:ajax event="rowSelectCheckbox" process="listaSelecionados"/>
+                    <p:ajax event="rowUnselectCheckbox" process="listaSelecionados"/>
+                    <p:ajax event="toggleSelect" process="listaSelecionados"/>
 
 
                     <p:column style="text-align: center" width="20%" sortBy="#{item.sigla}">
@@ -70,15 +69,14 @@
                                       value="#{item.significado}"/>
                     </p:column>
                     <f:facet name="footer">
-
+                        <p:commandButton id="atualizarDocDownload" value="Baixar Arquivo Atualizado"
+                                         icon="fa fa-download"
+                                         process="listaSelecionados"
+                                         action="#{siglaController.atualizarDocumento()}"
+                                         ajax="false" immediate="true"/>
                     </f:facet>
                 </p:dataTable>
 
-                <p:commandButton id="atualizarDocDownload" value="Baixar Arquivo Atualizado"
-                                 icon="fa fa-download"
-                                 process="listaSelecionados"
-                                 action="#{siglaController.atualizarDocumento()}"
-                                 ajax="false" immediate="true"/>
             </p:panel>
         </h:form>
     </ui:define>

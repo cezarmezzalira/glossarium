@@ -3,6 +3,7 @@ package com.mezzalira.web.util;
 import com.mezzalira.model.entity.Sigla;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.CharacterRun;
 import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.hwpf.usermodel.Section;
@@ -41,7 +42,7 @@ public class WordPOIUtil {
                 return replaceOnDocx(srcPath, destPath, sections, lsEntity);
             } else if ((sp[sp.length - 1].equalsIgnoreCase("doc"))
                     && (dp[dp.length - 1].equalsIgnoreCase("doc"))) {
-                return replaceOnDoc(srcPath, destPath, getListToReplace(lsEntity));
+                return replaceOnDoc(srcPath, destPath, lsEntity);
             } else {
                 return false;
             }
@@ -50,14 +51,13 @@ public class WordPOIUtil {
         }
     }
 
-    private boolean replaceOnDoc(String srcPath, String destPath, List<Termo> terms) {
+    private boolean replaceOnDoc(String srcPath, String destPath, List<Sigla> lsEntity) {
         HWPFDocument document = null;
         try {
             document = new HWPFDocument(new FileInputStream(srcPath));
-            Range range = document.getRange();
-            for (Termo termo : terms) {
-                range.replaceText(termo.getTermo(), termo.getSignficado());
-            }
+
+            document = replaceTermsOnDoc(document, getListToReplace(lsEntity));
+
             FileOutputStream outStream = null;
             outStream = new FileOutputStream(destPath);
             document.write(outStream);
@@ -72,6 +72,43 @@ public class WordPOIUtil {
         }
     }
 
+    private HWPFDocument replaceTermsOnDoc(HWPFDocument document, List<Termo> terms) {
+        HWPFDocument docChanged = document;
+        Range range = docChanged.getRange();
+        List<Termo> replacedTerms = new ArrayList<>();
+
+        for (int x = 0; x < range.numSections(); x++) {
+            Section s = range.getSection(x);
+            for (int y = 0; y < s.numParagraphs(); y++) {
+                Paragraph paragraph = s.getParagraph(y);
+
+                String textParag = paragraph.text();
+                for (int z = 0; z < paragraph.numCharacterRuns(); z++) {
+                    CharacterRun run = paragraph.getCharacterRun(z);
+                    String text = run.text();
+                    for (Termo termo : terms) {
+                        //verifico se no range existe o termo e se o termo não foi substituido
+                        //para evitar que ele substitua mais de uma vez o termo
+                        if ((text.contains(termo.getTermo())) &&
+                                (!replacedTerms.contains(termo))) {
+                            //String replacedText = text.replaceFirst(termo.getTermo(), termo.getSignficado());
+
+                            run.replaceText(termo.getTermo(), termo.getSignficado());
+
+                            //run.replaceText();
+                            replacedTerms.add(termo);
+                        }
+                    }
+                }
+
+
+            }
+        }
+
+        return docChanged;
+    }
+
+
     private boolean replaceOnDocx(String srcPath, String destPath,
                                   String sectionName, List<Sigla> lsEntity) {
         try {
@@ -80,8 +117,13 @@ public class WordPOIUtil {
             // 替换段落中的指定文字
             // Substituir os parágrafos de texto especificados
             document = replaceTerms(document, getListToReplace(lsEntity));
-            //subtitui a seção
-            document = replaceSectionListOnDocx(document, sectionName, lsEntity);
+
+            if (document == null) {
+                return false;
+            } else {
+                //subtitui a seção
+                document = replaceSectionListOnDocx(document, sectionName, lsEntity);
+            }
 
             FileOutputStream outStream = null;
             outStream = new FileOutputStream(destPath);
@@ -92,7 +134,6 @@ public class WordPOIUtil {
             e.printStackTrace();
             return false;
         }
-
     }
 
     /**
@@ -103,36 +144,65 @@ public class WordPOIUtil {
      * @return
      */
     private XWPFDocument replaceTerms(XWPFDocument document, List<Termo> terms) {
-        XWPFDocument docChanged = document;
-        Iterator<XWPFParagraph> itPara = docChanged
-                .getParagraphsIterator();
-        List<String> replacedTerms = new ArrayList<>();
 
-        while (itPara.hasNext()) {
-            XWPFParagraph paragraph = (XWPFParagraph) itPara.next();
-            List<XWPFRun> runs = paragraph.getRuns();
-            for (int i = 0; i < runs.size(); i++) {
-                String oneparaString = runs.get(i).getText(
-                        runs.get(i).getTextPosition());
-                if (terms == null) {
-                    break;
-                } else if (oneparaString != null) {
-                    for (Termo termo : terms) {
-                        //se não estiver na lista de substituidos e conter o termo na string
-                        if ((!replacedTerms.contains(termo.getTermo())) &&
-                                (oneparaString.contains(termo.getTermo()))) {
-                            oneparaString = oneparaString.replaceFirst(
-                                    termo.getTermo(), termo.getSignficado());
-                            runs.get(i).setText(oneparaString, 0);
-                            //adiciono para uma lista de itens já substituidos
-                            replacedTerms.add(termo.getTermo());
+        XWPFDocument docChanged = document;
+
+        try {
+
+            Iterator<XWPFParagraph> itPara = docChanged
+                    .getParagraphsIterator();
+            List<String> replacedTerms = new ArrayList<>();
+
+            while (itPara.hasNext()) {
+                XWPFParagraph paragraph = (XWPFParagraph) itPara.next();
+                List<XWPFRun> runs = paragraph.getRuns();
+                for (int i = 0; i < runs.size(); i++) {
+                    String oneparaString = runs.get(i).getText(
+                            runs.get(i).getTextPosition());
+
+                    //se não foi marcado nenhum termo, então
+                    if (terms == null) {
+                        break;
+                    } else if (oneparaString != null) {
+                        //retira todos os parenteses para substituir apenas o termo
+                        oneparaString = oneparaString.replace("(", "");
+                        oneparaString = oneparaString.replace(")", "");
+
+                        for (Termo termo : terms) {
+                            //se não estiver na lista de substituidos e conter o termo na string
+                            if ((!replacedTerms.contains(termo.getTermo())) &&
+                                    (oneparaString.contains(termo.getTermo()))) {
+                                String term = termo.getTermo();
+
+
+                                //valido a forma como a sigla aparece no trecho (run[i]) do paragrafo
+                            /*if (oneparaString.contains("("+termo.getTermo()+")")){
+                                term = "("+termo.getTermo()+")";
+                            } else if (oneparaString.contains("("+termo.getTermo())){
+                                term = "[(]"+termo.getTermo();
+                            } else if (oneparaString.contains(termo.getTermo()+")")){
+                                term = termo.getTermo()+")";
+                            }*/
+
+                                //crio um string builder para facilitar a criação da string que substituirá o termo
+                                StringBuilder significado = new StringBuilder();
+                                significado.append(termo.getSignficado()).append("(").append(termo.getTermo()).append(")");
+                                //substitui o termo na primeira vez que aparece
+                                oneparaString = oneparaString.replaceFirst(term, significado.toString());
+                                //atualiza o texto do run
+                                runs.get(i).setText(oneparaString, 0);
+                                //adiciono para uma lista de itens já substituidos
+                                replacedTerms.add(termo.getTermo());
+                            }
                         }
                     }
                 }
             }
+            return docChanged;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
         }
-
-        return docChanged;
     }
 
     /**
@@ -172,7 +242,7 @@ public class WordPOIUtil {
                     XWPFRun tempRun = paragraph.createRun();
                     StringBuilder termText = new StringBuilder();
 
-                    termText.append(term.getSigla().toUpperCase()).append(" - ").append(term.getSignificado());
+                    termText.append(term.getSigla().toUpperCase()).append("\t\t").append(term.getSignificado());
                     tempRun.setText(termText.toString());
                     boolean isItalic = term.getLinguaid().getEstrangeira() == 1;
                     tempRun.setItalic(isItalic);
@@ -240,7 +310,7 @@ public class WordPOIUtil {
             //A sigla sera substituida pelo seu significado e na sequencia
             // por ela mesma entre parenteses
             StringBuilder replaceTo = new StringBuilder();
-            replaceTo.append(sigla.getSignificado()).append(" - ").append(word.toString());
+            replaceTo.append(sigla.getSignificado()).append(" - ");
 
             termo.setTermo(word.toString());
             termo.setSignficado(replaceTo.toString());
