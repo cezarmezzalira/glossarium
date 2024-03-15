@@ -1,0 +1,53 @@
+*{
+    font-size: 11px;
+}
+
+.titulo{
+    text-align: center;
+    border: 0 !important;
+    font-size: 32px;
+}
+#centro{
+    height: 1024px;
+}
+
+#login{
+    text-align: right;
+}
+
+.rodape{
+    border: 0 !important;
+    text-align: center;
+}
+
+/*desabilita as bordas do panelgrid*/
+.ui-panelgrid tr, .ui-panelgrid td {
+    border:0 !important;
+    clear: both;
+}
+
+/*form centralizado...*/
+#formPesquisa{
+    width: 1000px;
+    /*height: 200px;*/
+    margin-left: -500px; /* metade da largura */
+    position: absolute;
+    left: 50%;
+}
+
+.panelNoBorder{
+    border: 0 !important;
+    padding-bottom: 0;
+}
+
+.cellItalicNoBorder{
+    border: 0 !important;
+    font-style: italic;
+}
+
+.panelTopo {
+    border: 0 !important;
+    padding-bottom: 0;
+    background-color: darkgray;
+}
+

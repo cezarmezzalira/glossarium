@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:components="http://java.sun.com/jsf/composite/components"
+      xmlns:h="http://java.sun.com/jsf/html">
+<ui:decorate template="../template/padrao.xhtml">
+    <ui:define name="titulo">
+        <h:outputText value="Aprovação de Termos"/>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <p:panelGrid columns="2">
+            <p:outputLabel value="#{form.siglaid}" for="siglaid"/>
+            <p:inputText value="#{siglaController.entity.siglaid}"
+                         label="#{form.siglaid}" id="siglaid" disabled="true"/>
+
+            <p:outputLabel value="#{form.sigla}" for="sigla"/>
+            <p:inputText value="#{siglaController.entity.sigla}"
+                         label="#{form.sigla}" id="sigla"/>
+        </p:panelGrid>
+
+        <p:panelGrid columns="3" id="panelItem">
+
+            <p:outputLabel value="#{form.significado}" for="significado"/>
+            <p:inputTextarea value="#{siglaController.entity.significado}"
+                         label="#{form.significado}" id="significado"/>
+
+            <br/>
+            <p:outputLabel value="#{form.linguagem}" for="linguagem"/>
+            <p:autoComplete value="#{siglaController.entity.linguaid}"
+                            completeMethod="#{siglaController.completeLinguagem()}"
+                            converter="#{linguagemConverter}"
+                            label="#{form.linguagem}" id="linguagem" var="linguagem"
+                            itemLabel="#{linguagem.descricao}" itemValue="#{linguagem}"
+                            dropdown="true" forceSelection="true" required="true"/>
+
+            <br/>
+            <p:outputLabel value="#{form.area}" for="area"/>
+            <p:autoComplete value="#{siglaController.entity.areaid}"
+                            completeMethod="#{siglaController.completeArea()}"
+                            converter="#{areaConverter}"
+                            label="#{form.area}" id="area" var="area"
+                            itemLabel="#{area.descricao}" itemValue="#{area}"
+                            dropdown="true" forceSelection="true" required="true"/>
+
+            <br/>
+            <p:outputLabel value="#{form.subarea}" for="subarea"/>
+            <p:autoComplete value="#{siglaController.entity.subareaid}"
+                            completeMethod="#{siglaController.completeSubArea()}"
+                            converter="#{subAreaConverter}"
+                            label="#{form.subarea}" id="subarea" var="subarea"
+                            itemLabel="#{subarea.descricao}" itemValue="#{subarea}"
+                            dropdown="true" forceSelection="true"/>
+
+            <br/>
+            <p:outputLabel value="#{form.tipoSigla}" for="tiposigla"/>
+            <p:autoComplete value="#{siglaController.entity.tiposiglaid}"
+                            completeMethod="#{siglaController.completeTipoSigla()}"
+                            converter="#{tipoSiglaConverter}"
+                            label="#{form.tiposigla}" id="tiposigla" var="tiposigla"
+                            itemLabel="#{tiposigla.descricao}" itemValue="#{tiposigla}"
+                            dropdown="true" forceSelection="true" required="true"/>
+        </p:panelGrid>
+    </ui:define>
+
+    <ui:define name="rodape">
+        <components:commandButtonForm update="@form" controller="#{siglaController}"/>
+
+        <p:commandButton value="Siglas Não Aprovadas" action="/pages/admin/professor/siglaAprovacaoSearch.xhtml?faces-redirect=true"
+                         immediate="true" ajax="false" style="float: right"/>
+
+        <div style="clear: both"></div>
+    </ui:define>
+</ui:decorate>
+</html>

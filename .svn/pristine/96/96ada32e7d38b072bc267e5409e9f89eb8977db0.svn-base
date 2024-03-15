@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.google.code.maven-play-plugin.org.apache.commons:commons-javaflow:1209105">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/code/maven-play-plugin/org/apache/commons/commons-javaflow/1209105/commons-javaflow-1209105.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/code/maven-play-plugin/org/apache/commons/commons-javaflow/1209105/commons-javaflow-1209105-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/code/maven-play-plugin/org/apache/commons/commons-javaflow/1209105/commons-javaflow-1209105-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

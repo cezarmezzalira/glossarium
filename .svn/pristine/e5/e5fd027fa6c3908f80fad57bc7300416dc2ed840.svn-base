@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Siglas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2302d9eb-26da-4d57-8cbe-fc4629485674">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<field name="SIGLA" class="java.lang.String">
+		<fieldDescription><![CDATA[SIGLA]]></fieldDescription>
+	</field>
+	<field name="SIGNIFICADO" class="java.lang.String">
+		<fieldDescription><![CDATA[SIGNIFICADO]]></fieldDescription>
+	</field>
+	<field name="ESTRANGEIRA" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ESTRANGEIRA]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="29" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="7" width="81" height="15" uuid="f2abca74-95f4-45e2-9658-564ffedcc223">
+					<printWhenExpression><![CDATA[$F{ESTRANGEIRA} == 0]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SIGLA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="7" width="450" height="15" uuid="1fc20190-93c5-4c01-8203-bd849fe061b5">
+					<printWhenExpression><![CDATA[$F{ESTRANGEIRA} == 0]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SIGNIFICADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="7" width="450" height="15" uuid="97d5579a-6719-4401-b5c0-9d41f9c9aeef">
+					<printWhenExpression><![CDATA[$F{ESTRANGEIRA} == 1]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SIGNIFICADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="7" width="81" height="15" uuid="993ef60e-336d-45c2-8323-457105d06303">
+					<printWhenExpression><![CDATA[$F{ESTRANGEIRA} == 1]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SIGLA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

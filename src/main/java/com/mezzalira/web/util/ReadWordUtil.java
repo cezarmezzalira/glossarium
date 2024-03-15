@@ -96,31 +96,29 @@ public class ReadWordUtil {
                 //elimina os espaços
                 word = word.trim();
 
-                if (!word.isEmpty()) {
+                    /*Cezar 07/09/2015
+                    * Criada variavel com palavra sem os parenteses
+                    * para diminuir tempo de processamento na validação.
+                    *
+                    * */
+                String tempWord = removeParenthesis(word);
 
-                    //Se o primeiro caractere for maiusculo e o ultimo for fecha parenteses...
+                if (validTerm(tempWord) && !tempWord.isEmpty()) {
+                    ///Se o primeiro caractere for maiusculo e o ultimo for fecha parenteses...
+                    //Evita numeros e listas de letras
                     if ((Character.isUpperCase(word.charAt(0))) &&
                             (Character.compare(word.charAt(word.length() - 1), ')') == 0)) {
-                        addTerm(word);
+                        addTerm(tempWord);
                     } //Se o primeiro caractere for abre parenteses e o ultimo for fecha parenteses...
                     else if ((Character.compare(word.charAt(0), '(') == 0) &&
                             (Character.compare(word.charAt(word.length() - 1), ')') == 0)) {
-                        addTerm(word);
+                        addTerm(tempWord);
                     }
                 }
             }
         }
         return terms;
     }
-
-    private void addTerm(String word) {
-        if (validTerm(word)) {
-            if (!terms.contains(removeParenthesis(word))) {
-                terms.add(removeParenthesis(word));
-            }
-        }
-    }
-
 
     private boolean validTerm(String word) {
         //converte a palavra para array
@@ -138,6 +136,15 @@ public class ReadWordUtil {
         return isTerm;
     }
 
+
+    private void addTerm(String word) {
+
+        if (validTerm(word)) {
+            if (!terms.contains(word)) {
+                terms.add(word);
+            }
+        }
+    }
 
     private String removeParenthesis(String word) {
         return word.replace('(', ' ').replace(')', ' ').trim();

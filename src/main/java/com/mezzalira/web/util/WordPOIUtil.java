@@ -114,7 +114,6 @@ public class WordPOIUtil {
         try {
             XWPFDocument document = new XWPFDocument(
                     POIXMLDocument.openPackage(srcPath));
-            // 替换段落中的指定文字
             // Substituir os parágrafos de texto especificados
             document = replaceTerms(document, getListToReplace(lsEntity));
 
@@ -174,19 +173,12 @@ public class WordPOIUtil {
                                     (oneparaString.contains(termo.getTermo()))) {
                                 String term = termo.getTermo();
 
-
-                                //valido a forma como a sigla aparece no trecho (run[i]) do paragrafo
-                            /*if (oneparaString.contains("("+termo.getTermo()+")")){
-                                term = "("+termo.getTermo()+")";
-                            } else if (oneparaString.contains("("+termo.getTermo())){
-                                term = "[(]"+termo.getTermo();
-                            } else if (oneparaString.contains(termo.getTermo()+")")){
-                                term = termo.getTermo()+")";
-                            }*/
-
                                 //crio um string builder para facilitar a criação da string que substituirá o termo
                                 StringBuilder significado = new StringBuilder();
+
                                 significado.append(termo.getSignficado()).append("(").append(termo.getTermo()).append(")");
+
+
                                 //substitui o termo na primeira vez que aparece
                                 oneparaString = oneparaString.replaceFirst(term, significado.toString());
                                 //atualiza o texto do run
@@ -310,7 +302,9 @@ public class WordPOIUtil {
             //A sigla sera substituida pelo seu significado e na sequencia
             // por ela mesma entre parenteses
             StringBuilder replaceTo = new StringBuilder();
-            replaceTo.append(sigla.getSignificado()).append(" - ");
+
+            //
+            replaceTo.append(sigla.getSignificado()).append(" ");
 
             termo.setTermo(word.toString());
             termo.setSignficado(replaceTo.toString());

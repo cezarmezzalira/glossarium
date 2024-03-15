@@ -185,13 +185,12 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         String path = destination + fileName;
         String pathDownload = destination + "Glossarium_" + fileName;
 
-        //adicionarNaLista();
+        adicionarNaLista();
 
         WordPOIUtil wordPOIUtil = new WordPOIUtil();
         boolean generateFile = wordPOIUtil.replaceAndGenerateWord(path, pathDownload, "#LISTASIGLA", itensAdicionados);
 
         //chamo a tela para download
-        //RequestContext.getCurrentInstance().execute("PF('dialogDownload').show()");
         try {
             if (generateFile) {
                 downloadFile(pathDownload);
@@ -210,6 +209,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         // Get HTTP response
 
         ExternalContext ec = getFacesContext().getExternalContext();
+
 
         ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
         ec.setResponseContentType("application/msword"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
@@ -238,6 +238,7 @@ public class SiglaController extends CrudController<Sigla, Integer> {
         // Signal the JavaServer Faces implementation that the HTTP response for this request has already been generated
         // (such as an HTTP redirect), and that the request processing lifecycle should be terminated
         // as soon as the current phase is completed.
+        //getFacesContext().renderResponse();
         getFacesContext().responseComplete();
 
     }

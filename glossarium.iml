@@ -143,10 +143,10 @@
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.17" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf:itextpdf:5.4.0" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf.tool:xmlworker:1.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.11" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.12" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.12" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.12" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.12" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jdt.core.compiler:ecj:4.2.1" level="project" />

@@ -10,17 +10,22 @@
             <p:panel id="panelParametros"
                      header="Faça upload do arquivo para poder pesquisar as siglas que existem no texto">
                 <p:fileUpload fileUploadListener="#{siglaController.upload}"
-                              allowTypes="/(\.|\/)(doc|docx|odt)$/" sizeLimit="5000000"
+                              allowTypes="/(\.|\/)(docx)$/" sizeLimit="5000000"
                               description="Selecione o arquivo"
                               mode="advanced" dragDropSupport="true"
-                              fileLimit="1" fileLimitMessage="Só é possível efetuar upload de um arquivo"
-                              update="@form" process="@form" styleClass="panelNoBorder" style="margin-top: 10px;"/>
+                              fileLimit="1"
+                              fileLimitMessage="Só é possível efetuar upload de um arquivo"
+                              update="@form" process="@form" styleClass="panelNoBorder"
+                              style="margin-top: 10px; !important;"/>
+
+                <p:spacer height="2" width="500"/>
 
                 <p:dataList id="listTermos" value="#{siglaController.terms}"
                             emptyMessage="#{msg.nenhum_registro_encontrado}"
-                            var="term" type="ordered" styleClass="panelNoBorder" style="margin-top: 10px;">
+                            var="term" type="ordered"
+                            style="margin-top: 10px;">
                     <f:facet name="header">
-                        Termos
+                        Siglas
                     </f:facet>
                     #{term}
                     <f:facet name="footer">
@@ -37,7 +42,8 @@
                              emptyMessage="#{msg.nenhum_registro_encontrado}"
                              selection="#{siglaController.siglas}"
                              rowKey="#{item.siglaid}"
-                             paginator="true" rows="15" paginatorPosition="bottom">
+                             paginator="true" rows="15" paginatorPosition="bottom"
+                             style="padding-top: 10px;">
 
                     <f:facet name="header">
                         Resultados da pesquisa
@@ -73,7 +79,8 @@
                                          icon="fa fa-download"
                                          process="listaSelecionados"
                                          action="#{siglaController.atualizarDocumento()}"
-                                         ajax="false" immediate="true"/>
+                                         ajax="false" immediate="true"
+                                         disabled="#{siglaController.terms.size() == 0}"/>
                     </f:facet>
                 </p:dataTable>
 
